@@ -29,6 +29,38 @@ function Controls() {
   );
 }
 
+function VisitSettings() {
+  const quality = useExperience((s) => s.quality);
+  const atmosphere = useExperience((s) => s.atmosphere);
+  const views = useExperience((s) => s.views);
+  return (
+    <div className={styles.visitSettings}>
+      <div className={styles.roomLinks} aria-label="Visitar un ambiente">
+        {views.map((view) => (
+          <button key={view.id} type="button" onClick={() => {
+            useExperience.getState().visit(view.id);
+            useExperience.getState().lock();
+          }}>{view.label}</button>
+        ))}
+      </div>
+      <div className={styles.settingsRow}>
+        <label>Luz
+          <select aria-label="Luz" value={atmosphere} onChange={(event) => useExperience.getState().setAtmosphere(event.target.value as 'dia' | 'tarde')}>
+            <option value="dia">Luz de día</option>
+            <option value="tarde">Tarde cálida</option>
+          </select>
+        </label>
+        <label>Calidad
+          <select aria-label="Calidad" value={quality} onChange={(event) => useExperience.getState().setQuality(event.target.value as 'alta' | 'fluida')}>
+            <option value="alta">Alta · sombras de contacto</option>
+            <option value="fluida">Fluida · menor consumo</option>
+          </select>
+        </label>
+      </div>
+    </div>
+  );
+}
+
 export function Hud({ desarrollo }: { desarrollo: Desarrollo }) {
   const phase = useExperience((s) => s.phase);
   const prompt = useExperience((s) => s.prompt);
@@ -87,13 +119,13 @@ export function Hud({ desarrollo }: { desarrollo: Desarrollo }) {
       {phase === 'intro' && (
         <div className={styles.overlay} role="dialog" aria-modal="true" aria-labelledby="exp-title">
           <div className={styles.panel}>
-            <span className={styles.kicker}>Recorrido 3D · primera persona</span>
+            <span className={styles.kicker}>Una nueva forma de habitar</span>
             <h1 id="exp-title">{desarrollo.nombre}</h1>
             <p>
-              Llegaste en el <strong>MARQ Bus</strong>. Entrá al hall, tomá el ascensor y recorré el departamento muestra. Cuando quieras volver al mapa,
-              subite de nuevo al bus.
+              Llegaste frente a Torre Natalini. Entrá al hall, tomá el ascensor y recorré el departamento a tu ritmo.
             </p>
-            <Controls />
+            <VisitSettings />
+            <details className={styles.controlsDetails}><summary>Cómo recorrer</summary><Controls /></details>
             <button type="button" className="btn btn-accent" onClick={lock} autoFocus>
               Comenzar recorrido
             </button>
@@ -108,6 +140,7 @@ export function Hud({ desarrollo }: { desarrollo: Desarrollo }) {
           <div className={styles.panel}>
             <span className={styles.kicker}>Pausa</span>
             <h1 id="pause-title">{info.titulo}</h1>
+            <VisitSettings />
             <Controls />
             <div className={styles.actions}>
               <button type="button" className="btn btn-primary" onClick={lock} autoFocus>

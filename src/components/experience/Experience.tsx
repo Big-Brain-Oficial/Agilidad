@@ -2,7 +2,7 @@
 
 import { useProgress } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
-import { Suspense, useCallback, useEffect, useState } from 'react';
+import { Suspense, useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import * as THREE from 'three';
 import { urlModelo, type Desarrollo } from '@/content/desarrollos';
 import { useCurtain } from '@/components/transition/curtain-store';
@@ -27,8 +27,9 @@ export default function Experience({ desarrollo, debug = false }: { desarrollo: 
   // No se dibuja hasta que los shaders están compilados: dibujar antes obliga al navegador a
   // esperar la compilación (en Windows/Direct3D puede congelar la página varios segundos).
   const [ready, setReady] = useState(false);
+  const quality = useExperience((s) => s.quality);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     useExperience.getState().reset();
     return () => {
       if (document.pointerLockElement) document.exitPointerLock();
@@ -49,12 +50,12 @@ export default function Experience({ desarrollo, debug = false }: { desarrollo: 
         <Canvas
           shadows="percentage"
           frameloop={ready ? 'always' : 'never'}
-          dpr={[1, 1.75]}
-          camera={{ fov: 70, near: 0.05, far: 3000 }}
+          dpr={[1, quality === 'alta' ? 1.5 : 1]}
+          camera={{ fov: 58, near: 0.06, far: 1500 }}
           gl={{ antialias: true, powerPreference: 'high-performance' }}
           onCreated={({ gl }) => {
-            gl.toneMapping = THREE.NeutralToneMapping;
-            gl.toneMappingExposure = 1;
+            gl.toneMapping = THREE.ACESFilmicToneMapping;
+            gl.toneMappingExposure = 1.05;
           }}
         >
           <Suspense fallback={null}>

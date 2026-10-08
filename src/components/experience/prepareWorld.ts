@@ -34,6 +34,8 @@ export interface WorldData {
   shaft: THREE.Box3;
   zones: { id: ZonaId; box: THREE.Box3 }[];
   lights: LightAnchor[];
+  views: { id: string; label: string; position: THREE.Vector3; target: THREE.Vector3 }[];
+  initialLevel: number;
 }
 
 const GLASS: Record<string, { opacity: number; color?: string }> = {
@@ -47,6 +49,7 @@ export function prepareWorld(scene: THREE.Object3D): WorldData {
   scene.updateMatrixWorld(true);
   const colliders: THREE.Mesh[] = [];
   const cabinMeshes: THREE.Mesh[] = [];
+  const materials = new Map<THREE.Material, THREE.Material>();
   const named = (name: string) => {
     const o = scene.getObjectByName(name);
     if (!o) throw new Error(`El modelo no tiene el ancla ${name}`);
@@ -60,8 +63,22 @@ export function prepareWorld(scene: THREE.Object3D): WorldData {
 
   scene.traverse((o) => {
     if (!(o instanceof THREE.Mesh)) return;
-    const material = o.material as THREE.MeshStandardMaterial;
+    if (o.name.startsWith('PHY__')) {
+      o.visible = false;
+      colliders.push(o);
+      return;
+    }
+    const cloneMaterial = (source: THREE.Material) => {
+      if (!materials.has(source)) materials.set(source, source.clone());
+      return materials.get(source)!;
+    };
+    o.material = Array.isArray(o.material) ? o.material.map(cloneMaterial) : cloneMaterial(o.material);
+    const list = (Array.isArray(o.material) ? o.material : [o.material]) as THREE.MeshStandardMaterial[];
+    let isGlass = false;
+    for (const material of list) {
     const glass = GLASS[material.name];
+    const physicalGlass = material instanceof THREE.MeshPhysicalMaterial && material.transmission > 0;
+    isGlass ||= !!glass || physicalGlass;
     if (glass) {
       material.transparent = true;
       material.opacity = glass.opacity;
@@ -70,9 +87,13 @@ export function prepareWorld(scene: THREE.Object3D): WorldData {
       material.roughness = 0.08;
       if (glass.color) material.color.set(glass.color);
     }
-    // Sin mapa de entorno, los metales muy reflectivos se verían negros: se moderan.
-    material.metalness = Math.min(material.metalness, 0.25);
-    o.castShadow = !glass;
+    material.envMapIntensity = physicalGlass ? 1 : 0.8;
+    // Los metales conservan su respuesta física con IBL. Los mapas de datos permanecen lineales.
+    for (const texture of [material.map, material.normalMap, material.roughnessMap, material.metalnessMap]) {
+      if (texture) texture.anisotropy = 8;
+    }
+    }
+    o.castShadow = !isGlass;
     o.receiveShadow = true;
     if (o.name.startsWith('COL__')) colliders.push(o);
     if (o.name.startsWith('VIS__ascensor')) cabinMeshes.push(o);
@@ -117,6 +138,16 @@ export function prepareWorld(scene: THREE.Object3D): WorldData {
   });
 
   const elevatorData = elevator.userData as { niveles?: number[]; piso_depto?: number };
+  const levels = elevatorData.niveles ?? [0];
+  const views: WorldData['views'] = [];
+  scene.traverse((o) => {
+    if (!o.name.startsWith('VISTA__')) return;
+    views.push({ id: o.name.slice(7), label: String(o.userData.label), position: worldPos(o), target: fromBlender(o.userData.target) });
+  });
+  views.push({ id: 'exterior', label: 'Acceso al edificio', position: worldPos(named('ANCLA__inicio')), target: worldPos(named('ANCLA__acceso')) });
+  // La llegada siempre comienza en la vereda, mirando al acceso del edificio.
+  const initialLevel = 0;
+  cabin.position.y = levels[initialLevel];
 
   return {
     collider: buildCollider(colliders, [...walls, busBox]),
@@ -125,10 +156,12 @@ export function prepareWorld(scene: THREE.Object3D): WorldData {
     bus,
     busDoor,
     cabin,
-    levels: elevatorData.niveles ?? [0],
+    levels,
     pisoDepto: elevatorData.piso_depto ?? 0,
     shaft: zones.find((z) => z.id === 'ascensor')?.box ?? new THREE.Box3(),
     zones,
     lights,
+    views,
+    initialLevel,
   };
 }

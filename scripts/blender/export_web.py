@@ -80,7 +80,7 @@ if lift:
 # Luces de Blender: se exportan como anclas para recrearlas en la web.
 light_anchors = []
 for o in S.objects:
-    if o.type == 'LIGHT':
+    if o.type == 'LIGHT' and o.get('web_light', True):
         direction = (o.matrix_world.to_3x3() @ Vector((0, 0, -1))).normalized()
         light_anchors.append({
             'name': o.name, 'location': o.matrix_world.translation.copy(), 'tipo': o.data.type,
@@ -109,7 +109,7 @@ meshes = list(S.objects)
 for o in meshes:
     zone = 'ascensor' if o.name in cabin_names else ZONE_BY_COLLECTION.get(collection_of[o.name], 'otros')
     o['_zona'] = zone
-    o['_colision'] = zone != 'ascensor' and base_name(o.name) not in NO_COLLISION
+    o['_colision'] = o.get('archviz_collide', zone != 'ascensor' and base_name(o.name) not in NO_COLLISION)
 
 # Modificadores aplicados y datos de malla propios (la fachada comparte mallas entre pisos).
 depsgraph = bpy.context.evaluated_depsgraph_get()
@@ -121,7 +121,8 @@ for o in meshes:
     elif o.data.users > 1:
         o.data = o.data.copy()
 
-# Materiales: sin nodos procedurales (queda el color base) y vidrios translúcidos simples.
+# Las texturas de imagen y sus normales se conservan. Los materiales AV_ ya son
+# compatibles con glTF; solo se adapta el vidrio antiguo del exterior.
 for m in bpy.data.materials:
     if not m.use_nodes:
         continue
@@ -129,9 +130,6 @@ for m in bpy.data.materials:
     bsdf = nt.nodes.get('Principled BSDF')
     if not bsdf:
         continue
-    for socket in ('Base Color', 'Normal'):
-        for link in list(bsdf.inputs[socket].links):
-            nt.links.remove(link)
     if m.name.startswith('Vidrio'):
         bsdf.inputs['Transmission Weight'].default_value = 0
         bsdf.inputs['Alpha'].default_value = 0.25 if 'claro' in m.name else 0.6
@@ -142,15 +140,15 @@ for m in bpy.data.materials:
 groups = {}
 for o in meshes:
     mat = o.active_material.name if o.active_material else 'SinMaterial'
-    groups.setdefault((o['_zona'], mat, bool(o['_colision'])), []).append(o)
+    groups.setdefault((o['_zona'], mat, bool(o['_colision']), bool(o.get('archviz_proxy', False))), []).append(o)
 
 joined = []
-for (zone, mat, collide), objs in sorted(groups.items()):
+for (zone, mat, collide, proxy), objs in sorted(groups.items()):
     active = objs[0]
     if len(objs) > 1:
         with bpy.context.temp_override(active_object=active, object=active, selected_objects=objs, selected_editable_objects=objs):
             bpy.ops.object.join()
-    active.name = f"{'COL' if collide else 'VIS'}__{zone}__{slug(mat)}"
+    active.name = f"{'PHY' if proxy else 'COL' if collide else 'VIS'}__{zone}__{slug(mat)}"
     joined.append(active.name)
 
 
@@ -177,6 +175,14 @@ anchor('ZONA__palier', (-0.9, 7.98, ZAPT + 1.5), (2.05, 0.63, 1.5))
 if floor_box:
     lo, hi = floor_box
     anchor('ZONA__depto', ((lo.x + hi.x) / 2, (lo.y + hi.y) / 2, ZAPT + 1.4), ((hi.x - lo.x) / 2, (hi.y - lo.y) / 2, 1.6))
+if 'ARCHVIZ_BOUNDS' in S:
+    bounds = json.loads(S['ARCHVIZ_BOUNDS'])
+    lo, hi, offset = bounds['min'], bounds['max'], bounds['offset']
+    anchor('ZONA__depto', (offset[0]+(lo[0]+hi[0])/2, offset[1]+(lo[1]+hi[1])/2, ZAPT+1.4),
+           ((hi[0]-lo[0])/2, (hi[1]-lo[1])/2, 1.6))
+    for view in json.loads(S['ARCHVIZ_VIEWS']):
+        anchor('VISTA__'+view['id'], [offset[i]+view['position'][i] for i in range(3)],
+               label=view['label'], target=[offset[i]+view['target'][i] for i in range(3)])
 for i, light in enumerate(light_anchors):
     anchor(f"LUZ__{i:02d}__{slug(light['name'])}", light['location'], tipo=light['tipo'], energia=light['energia'],
            color=light['color'], direccion=light['direccion'])
@@ -194,9 +200,9 @@ bpy.ops.export_scene.gltf(
     export_animations=False,
     export_extras=True,
     export_materials='EXPORT',
-    export_texcoords=False,
+    export_texcoords=True,
     export_normals=True,
-    export_tangents=False,
+    export_tangents=True,
 )
 
 print('EXPORT_WEB_OK', json.dumps({'salida': OUT, 'mallas': len(joined), 'luces': len(light_anchors), 'altura_depto': ZAPT}))

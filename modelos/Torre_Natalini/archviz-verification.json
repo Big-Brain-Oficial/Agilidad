@@ -1,0 +1,106 @@
+{
+  "units": "m",
+  "dimensionChecks": [
+    {
+      "id": "living",
+      "expected": [
+        5.4,
+        3.4
+      ],
+      "measured": [
+        5.4,
+        3.4
+      ],
+      "source": "mejoras/planimetria.webp"
+    },
+    {
+      "id": "kitchen",
+      "expected": [
+        1.6,
+        3.35
+      ],
+      "measured": [
+        1.6,
+        3.35
+      ],
+      "source": "mejoras/planimetria.webp"
+    },
+    {
+      "id": "bedroom1",
+      "expected": [
+        3.9,
+        2.7
+      ],
+      "measured": [
+        3.9,
+        2.7
+      ],
+      "source": "mejoras/planimetria.webp"
+    },
+    {
+      "id": "bedroom2",
+      "expected": [
+        3.6,
+        2.7
+      ],
+      "measured": [
+        3.6,
+        2.7
+      ],
+      "source": "mejoras/planimetria.webp"
+    },
+    {
+      "id": "bathroom",
+      "expected": [
+        1.2,
+        2.95
+      ],
+      "measured": [
+        1.2,
+        2.95
+      ],
+      "source": "mejoras/planimetria.webp"
+    },
+    {
+      "id": "toilet",
+      "expected": [
+        1.3,
+        1.4
+      ],
+      "measured": [
+        1.3,
+        1.4
+      ],
+      "source": "mejoras/planimetria.webp"
+    },
+    {
+      "id": "balcony",
+      "expected": [
+        1.45,
+        2.5
+      ],
+      "measured": [
+        1.45,
+        2.5
+      ],
+      "source": "mejoras/planimetria.webp"
+    }
+  ],
+  "assumptions": {
+    "clearHeight": 2.75,
+    "internalWall": 0.12,
+    "externalWall": 0.18,
+    "doorHeight": 2.18,
+    "bedroomDoorWidth": 0.82,
+    "bathroomDoorWidth": 0.78,
+    "entryDoorWidth": 0.9,
+    "apartmentOffset": [
+      -7.5,
+      0
+    ],
+    "note": "Alturas, espesores, huecos, posiciones relativas, núcleo y nivel son interpretaciones. Las cotas impresas se respetan como dimensiones libres de los sectores rectangulares; no se fuerza la superficie neta a 97 m². El segundo dormitorio conserva un anexo de placard fuera de su rectángulo acotado."
+  },
+  "netAreaNotCertified": true,
+  "publishedArea": 97,
+  "blender": "5.1.2"
+}

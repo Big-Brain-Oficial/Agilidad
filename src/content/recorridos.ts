@@ -32,4 +32,4 @@ export const ZONAS_NATALINI: Record<ZonaId, Zona> = {
 };
 
 export const AVISO_MODELO =
-  'Modelo interpretativo: la volumetría, el piso y la ubicación del departamento son aproximados y se ajustarán con los planos de MARQ.';
+  'Dimensiones de ambientes basadas en el plano suministrado. Altura, aberturas, núcleo y ubicación en la torre pendientes de confirmación. Ambientación ilustrativa.';

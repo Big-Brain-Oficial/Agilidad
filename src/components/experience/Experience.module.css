@@ -146,19 +146,40 @@
   position: absolute;
   inset: 0;
   display: grid;
-  place-items: center;
-  padding: 16px;
-  background: rgba(29, 29, 31, 0.35);
-  backdrop-filter: blur(3px);
+  align-items: center;
+  justify-items: end;
+  padding: 30px;
+  background: linear-gradient(90deg, transparent 35%, rgba(29, 29, 31, 0.25));
 }
 
 .panel {
   width: min(520px, 100%);
   padding: 32px 34px 28px;
   border-radius: 20px;
-  background: #fff;
+  max-height: calc(100dvh - 60px);
+  overflow-y: auto;
+  background: rgba(250, 249, 246, 0.97);
   box-shadow: 0 24px 60px rgba(29, 29, 31, 0.25);
 }
+
+.visitSettings { margin: 20px 0; }
+.roomLinks { display: flex; flex-wrap: wrap; gap: 7px; }
+.roomLinks button {
+  border: 1px solid #d9d4c9;
+  border-radius: 6px;
+  padding: 9px 11px;
+  background: transparent;
+  color: #45433e;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.roomLinks button:hover, .roomLinks button:focus-visible { background: #e8e4dc; border-color: #8c8170; }
+.settingsRow { display: grid; grid-template-columns: 1fr 1.55fr; gap: 12px; margin-top: 18px; }
+.settingsRow label { display: grid; gap: 7px; font-size: 12px; color: #656057; }
+.settingsRow select { width: 100%; min-width: 0; padding: 9px; color: #37342f; background: #fff; border: 1px solid #d9d4c9; border-radius: 6px; font: inherit; }
+.controlsDetails { margin-bottom: 22px; font-size: 13px; color: #656057; }
+.controlsDetails summary { cursor: pointer; margin-bottom: 10px; }
 .panel h1 {
   margin: 10px 0 12px;
   font: 800 32px/1.1 var(--font-display);

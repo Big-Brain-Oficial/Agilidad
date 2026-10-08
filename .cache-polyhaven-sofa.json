@@ -1,0 +1,1034 @@
+﻿{
+    "Diffuse":  {
+                    "8k":  {
+                               "jpg":  {
+                                           "size":  6408684,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/sofa_03/sofa_03_diff_8k.jpg",
+                                           "md5":  "6021dbd4fd8eb6332d899724cd3d90ad"
+                                       },
+                               "png":  {
+                                           "size":  177828243,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/sofa_03/sofa_03_diff_8k.png",
+                                           "md5":  "e6a7048334039588d35a2f923566080e"
+                                       },
+                               "exr":  {
+                                           "size":  42401946,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/sofa_03/sofa_03_diff_8k.exr",
+                                           "md5":  "aa5d99766fc4dc9b06c2a5a6beb38ad2"
+                                       }
+                           },
+                    "4k":  {
+                               "jpg":  {
+                                           "size":  2032258,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/sofa_03/sofa_03_diff_4k.jpg",
+                                           "md5":  "9ec019892ee95c1818d5926a205e42a1"
+                                       },
+                               "png":  {
+                                           "size":  71564651,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/sofa_03/sofa_03_diff_4k.png",
+                                           "md5":  "c7cda38441700d661251847e7bfa13de"
+                                       },
+                               "exr":  {
+                                           "size":  14288817,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/sofa_03/sofa_03_diff_4k.exr",
+                                           "md5":  "5a0d3097eae0eebabb52e39c353c14e3"
+                                       }
+                           },
+                    "2k":  {
+                               "jpg":  {
+                                           "size":  563414,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/sofa_03/sofa_03_diff_2k.jpg",
+                                           "md5":  "38aeca485a17eb8345a2e6a623d0294c"
+                                       },
+                               "png":  {
+                                           "size":  20584670,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/sofa_03/sofa_03_diff_2k.png",
+                                           "md5":  "cc4da9685092f714881518c4253cd50e"
+                                       },
+                               "exr":  {
+                                           "size":  3988071,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/sofa_03/sofa_03_diff_2k.exr",
+                                           "md5":  "f768695b99a8bdc28ef398b35edcb02b"
+                                       }
+                           },
+                    "1k":  {
+                               "jpg":  {
+                                           "size":  151815,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/sofa_03/sofa_03_diff_1k.jpg",
+                                           "md5":  "1f33a1431d98e1560a04b661e786b45b"
+                                       },
+                               "png":  {
+                                           "size":  5488317,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/sofa_03/sofa_03_diff_1k.png",
+                                           "md5":  "b0a410820cde50f9d991fb1ff565cbf0"
+                                       },
+                               "exr":  {
+                                           "size":  1092397,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/sofa_03/sofa_03_diff_1k.exr",
+                                           "md5":  "145fb59184471dc63551025792b1c415"
+                                       }
+                           }
+                },
+    "nor_dx":  {
+                   "8k":  {
+                              "jpg":  {
+                                          "size":  2605956,
+                                          "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/sofa_03/sofa_03_nor_dx_8k.jpg",
+                                          "md5":  "2f92c84ebb596b06368835189cc4e961"
+                                      },
+                              "png":  {
+                                          "size":  89950716,
+                                          "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/sofa_03/sofa_03_nor_dx_8k.png",
+                                          "md5":  "fbacb82840a10794b25933575e6cc308"
+                                      },
+                              "exr":  {
+                                          "size":  12159610,
+                                          "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/sofa_03/sofa_03_nor_dx_8k.exr",
+                                          "md5":  "eae0f7f63c67f403614e4236b1788996"
+                                      }
+                          },
+                   "4k":  {
+                              "jpg":  {
+                                          "size":  896095,
+                                          "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/sofa_03/sofa_03_nor_dx_4k.jpg",
+                                          "md5":  "2cd9a2e7a719baec139eef288f02f830"
+                                      },
+                              "png":  {
+                                          "size":  29000595,
+                                          "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/sofa_03/sofa_03_nor_dx_4k.png",
+                                          "md5":  "9f9171974b6a3c5667ae029d076c1615"
+                                      },
+                              "exr":  {
+                                          "size":  4610992,
+                                          "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/sofa_03/sofa_03_nor_dx_4k.exr",
+                                          "md5":  "e32b1e1ffd320255e6f3b535bdcbe2c9"
+                                      }
+                          },
+                   "2k":  {
+                              "jpg":  {
+                                          "size":  319609,
+                                          "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/sofa_03/sofa_03_nor_dx_2k.jpg",
+                                          "md5":  "bc98e209df48cf6e2ce2c55763cc7583"
+                                      },
+                              "png":  {
+                                          "size":  9230965,
+                                          "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/sofa_03/sofa_03_nor_dx_2k.png",
+                                          "md5":  "0a11d8d668d2ed490a9a86669911f792"
+                                      },
+                              "exr":  {
+                                          "size":  1773735,
+                                          "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/sofa_03/sofa_03_nor_dx_2k.exr",
+                                          "md5":  "d155babd66cff9fb6ff270074c1299a1"
+                                      }
+                          },
+                   "1k":  {
+                              "jpg":  {
+                                          "size":  112072,
+                                          "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/sofa_03/sofa_03_nor_dx_1k.jpg",
+                                          "md5":  "26e989db4c7424aa1a4be8b0bc3765bb"
+                                      },
+                              "png":  {
+                                          "size":  2840010,
+                                          "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/sofa_03/sofa_03_nor_dx_1k.png",
+                                          "md5":  "0d7e4cab0a4ed87fd049ed5a3345ef27"
+                                      },
+                              "exr":  {
+                                          "size":  659512,
+                                          "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/sofa_03/sofa_03_nor_dx_1k.exr",
+                                          "md5":  "fe34eca7f9710433e748447a01758e3e"
+                                      }
+                          }
+               },
+    "nor_gl":  {
+                   "8k":  {
+                              "jpg":  {
+                                          "size":  2608293,
+                                          "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/sofa_03/sofa_03_nor_gl_8k.jpg",
+                                          "md5":  "f75103306e7c9151bf247fcd201acf5b"
+                                      },
+                              "png":  {
+                                          "size":  89960682,
+                                          "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/sofa_03/sofa_03_nor_gl_8k.png",
+                                          "md5":  "6a81fc2bc4b2be3092598c2f3105a739"
+                                      },
+                              "exr":  {
+                                          "size":  12116077,
+                                          "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/sofa_03/sofa_03_nor_gl_8k.exr",
+                                          "md5":  "0c1a36155f65c608cac4a3abbfe57216"
+                                      }
+                          },
+                   "4k":  {
+                              "jpg":  {
+                                          "size":  897070,
+                                          "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/sofa_03/sofa_03_nor_gl_4k.jpg",
+                                          "md5":  "6df5a3bd0dc9ff1f6542913ef87ef8c1"
+                                      },
+                              "png":  {
+                                          "size":  29005615,
+                                          "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/sofa_03/sofa_03_nor_gl_4k.png",
+                                          "md5":  "91650a48bad855f360b897f051e263ec"
+                                      },
+                              "exr":  {
+                                          "size":  4586443,
+                                          "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/sofa_03/sofa_03_nor_gl_4k.exr",
+                                          "md5":  "348e87562922253c9afd47796d372c6d"
+                                      }
+                          },
+                   "2k":  {
+                              "jpg":  {
+                                          "size":  319647,
+                                          "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/sofa_03/sofa_03_nor_gl_2k.jpg",
+                                          "md5":  "36144a51ab530b063d2f5f5e3c8dd0c2"
+                                      },
+                              "png":  {
+                                          "size":  9231762,
+                                          "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/sofa_03/sofa_03_nor_gl_2k.png",
+                                          "md5":  "a5871618700e567fbe9d9d5e7ff71d31"
+                                      },
+                              "exr":  {
+                                          "size":  1763068,
+                                          "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/sofa_03/sofa_03_nor_gl_2k.exr",
+                                          "md5":  "c27a0bea6175d5689b69494337000a22"
+                                      }
+                          },
+                   "1k":  {
+                              "jpg":  {
+                                          "size":  112563,
+                                          "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/sofa_03/sofa_03_nor_gl_1k.jpg",
+                                          "md5":  "dec3ec9d5d1ad2abf260e58b67e5cd0e"
+                                      },
+                              "png":  {
+                                          "size":  2840714,
+                                          "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/sofa_03/sofa_03_nor_gl_1k.png",
+                                          "md5":  "2aa692467bdd22e34724b991c2ffbd43"
+                                      },
+                              "exr":  {
+                                          "size":  655796,
+                                          "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/sofa_03/sofa_03_nor_gl_1k.exr",
+                                          "md5":  "ceacabeb3f4411ed807f9c3cf883f189"
+                                      }
+                          }
+               },
+    "blend":  {
+                  "8k":  {
+                             "blend":  {
+                                           "include":  {
+                                                           "textures/sofa_03_nor_gl_8k.exr":  {
+                                                                                                  "size":  12116077,
+                                                                                                  "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/sofa_03/sofa_03_nor_gl_8k.exr",
+                                                                                                  "md5":  "0c1a36155f65c608cac4a3abbfe57216"
+                                                                                              },
+                                                           "textures/sofa_03_diff_8k.jpg":  {
+                                                                                                "size":  6408684,
+                                                                                                "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/sofa_03/sofa_03_diff_8k.jpg",
+                                                                                                "md5":  "6021dbd4fd8eb6332d899724cd3d90ad"
+                                                                                            },
+                                                           "textures/sofa_03_opacity_8k.png":  {
+                                                                                                   "size":  423675,
+                                                                                                   "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/sofa_03/sofa_03_opacity_8k.png",
+                                                                                                   "md5":  "c286de802f0d96f99b571dce025bbea4"
+                                                                                               },
+                                                           "textures/sofa_03_rough_8k.jpg":  {
+                                                                                                 "size":  6489395,
+                                                                                                 "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/sofa_03/sofa_03_rough_8k.jpg",
+                                                                                                 "md5":  "7a1bb21eeaff51378033357e3d23228e"
+                                                                                             }
+                                                       },
+                                           "size":  354276,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/blend/8k/sofa_03/sofa_03_8k.blend",
+                                           "md5":  "2e9b498fb2f518cd1ab498c87c5b3c13"
+                                       }
+                         },
+                  "4k":  {
+                             "blend":  {
+                                           "include":  {
+                                                           "textures/sofa_03_opacity_4k.png":  {
+                                                                                                   "size":  167418,
+                                                                                                   "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/sofa_03/sofa_03_opacity_4k.png",
+                                                                                                   "md5":  "86be3cbbaed1ade92dad6753bf19f07d"
+                                                                                               },
+                                                           "textures/sofa_03_diff_4k.jpg":  {
+                                                                                                "size":  2032258,
+                                                                                                "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/sofa_03/sofa_03_diff_4k.jpg",
+                                                                                                "md5":  "9ec019892ee95c1818d5926a205e42a1"
+                                                                                            },
+                                                           "textures/sofa_03_nor_gl_4k.exr":  {
+                                                                                                  "size":  4586443,
+                                                                                                  "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/sofa_03/sofa_03_nor_gl_4k.exr",
+                                                                                                  "md5":  "348e87562922253c9afd47796d372c6d"
+                                                                                              },
+                                                           "textures/sofa_03_rough_4k.jpg":  {
+                                                                                                 "size":  2188629,
+                                                                                                 "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/sofa_03/sofa_03_rough_4k.jpg",
+                                                                                                 "md5":  "4b02bd8bc57b21184724ff8f69406bde"
+                                                                                             }
+                                                       },
+                                           "size":  354254,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/blend/4k/sofa_03/sofa_03_4k.blend",
+                                           "md5":  "b1a6926e5388bf4d08834c18b64b4155"
+                                       }
+                         },
+                  "2k":  {
+                             "blend":  {
+                                           "include":  {
+                                                           "textures/sofa_03_rough_2k.jpg":  {
+                                                                                                 "size":  613551,
+                                                                                                 "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/sofa_03/sofa_03_rough_2k.jpg",
+                                                                                                 "md5":  "258efb972b9f20676a4cad3405f44ae6"
+                                                                                             },
+                                                           "textures/sofa_03_opacity_2k.png":  {
+                                                                                                   "size":  61632,
+                                                                                                   "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/sofa_03/sofa_03_opacity_2k.png",
+                                                                                                   "md5":  "93ea48feb6a5b95708c3fc63935eae41"
+                                                                                               },
+                                                           "textures/sofa_03_diff_2k.jpg":  {
+                                                                                                "size":  563414,
+                                                                                                "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/sofa_03/sofa_03_diff_2k.jpg",
+                                                                                                "md5":  "38aeca485a17eb8345a2e6a623d0294c"
+                                                                                            },
+                                                           "textures/sofa_03_nor_gl_2k.exr":  {
+                                                                                                  "size":  1763068,
+                                                                                                  "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/sofa_03/sofa_03_nor_gl_2k.exr",
+                                                                                                  "md5":  "c27a0bea6175d5689b69494337000a22"
+                                                                                              }
+                                                       },
+                                           "size":  354285,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/blend/2k/sofa_03/sofa_03_2k.blend",
+                                           "md5":  "e4eeac30af6205cd3b78db9b3dc58de8"
+                                       }
+                         },
+                  "1k":  {
+                             "blend":  {
+                                           "include":  {
+                                                           "textures/sofa_03_nor_gl_1k.exr":  {
+                                                                                                  "size":  655796,
+                                                                                                  "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/sofa_03/sofa_03_nor_gl_1k.exr",
+                                                                                                  "md5":  "ceacabeb3f4411ed807f9c3cf883f189"
+                                                                                              },
+                                                           "textures/sofa_03_rough_1k.jpg":  {
+                                                                                                 "size":  170206,
+                                                                                                 "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/sofa_03/sofa_03_rough_1k.jpg",
+                                                                                                 "md5":  "c3fe733eb2cef0424d5530e067518d60"
+                                                                                             },
+                                                           "textures/sofa_03_opacity_1k.png":  {
+                                                                                                   "size":  24606,
+                                                                                                   "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/sofa_03/sofa_03_opacity_1k.png",
+                                                                                                   "md5":  "31caada26019e56c95446313c28ba57d"
+                                                                                               },
+                                                           "textures/sofa_03_diff_1k.jpg":  {
+                                                                                                "size":  151815,
+                                                                                                "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/sofa_03/sofa_03_diff_1k.jpg",
+                                                                                                "md5":  "1f33a1431d98e1560a04b661e786b45b"
+                                                                                            }
+                                                       },
+                                           "size":  354218,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/blend/1k/sofa_03/sofa_03_1k.blend",
+                                           "md5":  "e6b2f1d18238562a2cdfb6a8b576ab51"
+                                       }
+                         }
+              },
+    "gltf":  {
+                 "8k":  {
+                            "gltf":  {
+                                         "include":  {
+                                                         "textures/sofa_03_nor_gl_8k.jpg":  {
+                                                                                                "size":  2608293,
+                                                                                                "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/sofa_03/sofa_03_nor_gl_8k.jpg",
+                                                                                                "md5":  "f75103306e7c9151bf247fcd201acf5b"
+                                                                                            },
+                                                         "textures/sofa_03_diff_8k.jpg":  {
+                                                                                              "size":  6408684,
+                                                                                              "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/sofa_03/sofa_03_diff_8k.jpg",
+                                                                                              "md5":  "6021dbd4fd8eb6332d899724cd3d90ad"
+                                                                                          },
+                                                         "sofa_03.bin":  {
+                                                                             "size":  228984,
+                                                                             "url":  "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/sofa_03/sofa_03.bin",
+                                                                             "md5":  "aeebfb9aed3b40300b0fb73f0e27830e"
+                                                                         },
+                                                         "textures/sofa_03_rough_8k.jpg":  {
+                                                                                               "size":  6489395,
+                                                                                               "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/sofa_03/sofa_03_rough_8k.jpg",
+                                                                                               "md5":  "7a1bb21eeaff51378033357e3d23228e"
+                                                                                           }
+                                                     },
+                                         "size":  4465,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/sofa_03/sofa_03_8k.gltf",
+                                         "md5":  "bd8dd7bd8a4bd763449da880d94eca43"
+                                     }
+                        },
+                 "4k":  {
+                            "gltf":  {
+                                         "include":  {
+                                                         "textures/sofa_03_nor_gl_4k.jpg":  {
+                                                                                                "size":  897070,
+                                                                                                "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/sofa_03/sofa_03_nor_gl_4k.jpg",
+                                                                                                "md5":  "6df5a3bd0dc9ff1f6542913ef87ef8c1"
+                                                                                            },
+                                                         "textures/sofa_03_diff_4k.jpg":  {
+                                                                                              "size":  2032258,
+                                                                                              "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/sofa_03/sofa_03_diff_4k.jpg",
+                                                                                              "md5":  "9ec019892ee95c1818d5926a205e42a1"
+                                                                                          },
+                                                         "sofa_03.bin":  {
+                                                                             "size":  228984,
+                                                                             "url":  "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/sofa_03/sofa_03.bin",
+                                                                             "md5":  "aeebfb9aed3b40300b0fb73f0e27830e"
+                                                                         },
+                                                         "textures/sofa_03_rough_4k.jpg":  {
+                                                                                               "size":  2188629,
+                                                                                               "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/sofa_03/sofa_03_rough_4k.jpg",
+                                                                                               "md5":  "4b02bd8bc57b21184724ff8f69406bde"
+                                                                                           }
+                                                     },
+                                         "size":  4465,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/sofa_03/sofa_03_4k.gltf",
+                                         "md5":  "5bdba0f6f1814441bb21920dd919ea92"
+                                     }
+                        },
+                 "2k":  {
+                            "gltf":  {
+                                         "include":  {
+                                                         "textures/sofa_03_rough_2k.jpg":  {
+                                                                                               "size":  613551,
+                                                                                               "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/sofa_03/sofa_03_rough_2k.jpg",
+                                                                                               "md5":  "258efb972b9f20676a4cad3405f44ae6"
+                                                                                           },
+                                                         "textures/sofa_03_nor_gl_2k.jpg":  {
+                                                                                                "size":  319647,
+                                                                                                "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/sofa_03/sofa_03_nor_gl_2k.jpg",
+                                                                                                "md5":  "36144a51ab530b063d2f5f5e3c8dd0c2"
+                                                                                            },
+                                                         "sofa_03.bin":  {
+                                                                             "size":  228984,
+                                                                             "url":  "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/sofa_03/sofa_03.bin",
+                                                                             "md5":  "aeebfb9aed3b40300b0fb73f0e27830e"
+                                                                         },
+                                                         "textures/sofa_03_diff_2k.jpg":  {
+                                                                                              "size":  563414,
+                                                                                              "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/sofa_03/sofa_03_diff_2k.jpg",
+                                                                                              "md5":  "38aeca485a17eb8345a2e6a623d0294c"
+                                                                                          }
+                                                     },
+                                         "size":  4465,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/gltf/2k/sofa_03/sofa_03_2k.gltf",
+                                         "md5":  "67cc1d6881cebae11fca743195dfdf93"
+                                     }
+                        },
+                 "1k":  {
+                            "gltf":  {
+                                         "include":  {
+                                                         "textures/sofa_03_rough_1k.jpg":  {
+                                                                                               "size":  170206,
+                                                                                               "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/sofa_03/sofa_03_rough_1k.jpg",
+                                                                                               "md5":  "c3fe733eb2cef0424d5530e067518d60"
+                                                                                           },
+                                                         "sofa_03.bin":  {
+                                                                             "size":  228984,
+                                                                             "url":  "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/sofa_03/sofa_03.bin",
+                                                                             "md5":  "aeebfb9aed3b40300b0fb73f0e27830e"
+                                                                         },
+                                                         "textures/sofa_03_diff_1k.jpg":  {
+                                                                                              "size":  151815,
+                                                                                              "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/sofa_03/sofa_03_diff_1k.jpg",
+                                                                                              "md5":  "1f33a1431d98e1560a04b661e786b45b"
+                                                                                          },
+                                                         "textures/sofa_03_nor_gl_1k.jpg":  {
+                                                                                                "size":  112563,
+                                                                                                "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/sofa_03/sofa_03_nor_gl_1k.jpg",
+                                                                                                "md5":  "dec3ec9d5d1ad2abf260e58b67e5cd0e"
+                                                                                            }
+                                                     },
+                                         "size":  4465,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/sofa_03/sofa_03_1k.gltf",
+                                         "md5":  "27f31e0500c2dd83a21fd3339ade7821"
+                                     }
+                        }
+             },
+    "usd":  {
+                "8k":  {
+                           "usd":  {
+                                       "include":  {
+                                                       "textures/sofa_03_nor_gl_8k.exr":  {
+                                                                                              "size":  12116077,
+                                                                                              "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/sofa_03/sofa_03_nor_gl_8k.exr",
+                                                                                              "md5":  "0c1a36155f65c608cac4a3abbfe57216"
+                                                                                          },
+                                                       "textures/sofa_03_diff_8k.jpg":  {
+                                                                                            "size":  6408684,
+                                                                                            "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/sofa_03/sofa_03_diff_8k.jpg",
+                                                                                            "md5":  "6021dbd4fd8eb6332d899724cd3d90ad"
+                                                                                        },
+                                                       "textures/sofa_03_opacity_8k.png":  {
+                                                                                               "size":  423675,
+                                                                                               "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/sofa_03/sofa_03_opacity_8k.png",
+                                                                                               "md5":  "c286de802f0d96f99b571dce025bbea4"
+                                                                                           },
+                                                       "textures/sofa_03_rough_8k.jpg":  {
+                                                                                             "size":  6489395,
+                                                                                             "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/sofa_03/sofa_03_rough_8k.jpg",
+                                                                                             "md5":  "7a1bb21eeaff51378033357e3d23228e"
+                                                                                         }
+                                                   },
+                                       "size":  409879,
+                                       "url":  "https://dl.polyhaven.org/file/ph-assets/Models/usd/8k/sofa_03/sofa_03_8k.usdc",
+                                       "md5":  "3de5348a81dae40dc9a29dabfc528f30"
+                                   }
+                       },
+                "4k":  {
+                           "usd":  {
+                                       "include":  {
+                                                       "textures/sofa_03_opacity_4k.png":  {
+                                                                                               "size":  167418,
+                                                                                               "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/sofa_03/sofa_03_opacity_4k.png",
+                                                                                               "md5":  "86be3cbbaed1ade92dad6753bf19f07d"
+                                                                                           },
+                                                       "textures/sofa_03_diff_4k.jpg":  {
+                                                                                            "size":  2032258,
+                                                                                            "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/sofa_03/sofa_03_diff_4k.jpg",
+                                                                                            "md5":  "9ec019892ee95c1818d5926a205e42a1"
+                                                                                        },
+                                                       "textures/sofa_03_nor_gl_4k.exr":  {
+                                                                                              "size":  4586443,
+                                                                                              "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/sofa_03/sofa_03_nor_gl_4k.exr",
+                                                                                              "md5":  "348e87562922253c9afd47796d372c6d"
+                                                                                          },
+                                                       "textures/sofa_03_rough_4k.jpg":  {
+                                                                                             "size":  2188629,
+                                                                                             "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/sofa_03/sofa_03_rough_4k.jpg",
+                                                                                             "md5":  "4b02bd8bc57b21184724ff8f69406bde"
+                                                                                         }
+                                                   },
+                                       "size":  409879,
+                                       "url":  "https://dl.polyhaven.org/file/ph-assets/Models/usd/4k/sofa_03/sofa_03_4k.usdc",
+                                       "md5":  "3ce49abccb5045dfd3510ac2a353f6c9"
+                                   }
+                       },
+                "2k":  {
+                           "usd":  {
+                                       "include":  {
+                                                       "textures/sofa_03_rough_2k.jpg":  {
+                                                                                             "size":  613551,
+                                                                                             "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/sofa_03/sofa_03_rough_2k.jpg",
+                                                                                             "md5":  "258efb972b9f20676a4cad3405f44ae6"
+                                                                                         },
+                                                       "textures/sofa_03_opacity_2k.png":  {
+                                                                                               "size":  61632,
+                                                                                               "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/sofa_03/sofa_03_opacity_2k.png",
+                                                                                               "md5":  "93ea48feb6a5b95708c3fc63935eae41"
+                                                                                           },
+                                                       "textures/sofa_03_diff_2k.jpg":  {
+                                                                                            "size":  563414,
+                                                                                            "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/sofa_03/sofa_03_diff_2k.jpg",
+                                                                                            "md5":  "38aeca485a17eb8345a2e6a623d0294c"
+                                                                                        },
+                                                       "textures/sofa_03_nor_gl_2k.exr":  {
+                                                                                              "size":  1763068,
+                                                                                              "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/sofa_03/sofa_03_nor_gl_2k.exr",
+                                                                                              "md5":  "c27a0bea6175d5689b69494337000a22"
+                                                                                          }
+                                                   },
+                                       "size":  409879,
+                                       "url":  "https://dl.polyhaven.org/file/ph-assets/Models/usd/2k/sofa_03/sofa_03_2k.usdc",
+                                       "md5":  "afb5ab769c6cced5e17dfbe874f6f0fd"
+                                   }
+                       },
+                "1k":  {
+                           "usd":  {
+                                       "include":  {
+                                                       "textures/sofa_03_nor_gl_1k.exr":  {
+                                                                                              "size":  655796,
+                                                                                              "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/sofa_03/sofa_03_nor_gl_1k.exr",
+                                                                                              "md5":  "ceacabeb3f4411ed807f9c3cf883f189"
+                                                                                          },
+                                                       "textures/sofa_03_rough_1k.jpg":  {
+                                                                                             "size":  170206,
+                                                                                             "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/sofa_03/sofa_03_rough_1k.jpg",
+                                                                                             "md5":  "c3fe733eb2cef0424d5530e067518d60"
+                                                                                         },
+                                                       "textures/sofa_03_opacity_1k.png":  {
+                                                                                               "size":  24606,
+                                                                                               "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/sofa_03/sofa_03_opacity_1k.png",
+                                                                                               "md5":  "31caada26019e56c95446313c28ba57d"
+                                                                                           },
+                                                       "textures/sofa_03_diff_1k.jpg":  {
+                                                                                            "size":  151815,
+                                                                                            "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/sofa_03/sofa_03_diff_1k.jpg",
+                                                                                            "md5":  "1f33a1431d98e1560a04b661e786b45b"
+                                                                                        }
+                                                   },
+                                       "size":  409879,
+                                       "url":  "https://dl.polyhaven.org/file/ph-assets/Models/usd/1k/sofa_03/sofa_03_1k.usdc",
+                                       "md5":  "02924aad7a817bc21b9e9ddea8fa14ef"
+                                   }
+                       }
+            },
+    "Metal":  {
+                  "8k":  {
+                             "jpg":  {
+                                         "size":  786828,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/sofa_03/sofa_03_metal_8k.jpg",
+                                         "md5":  "5f26c2cf9864f606a385079105582ab9"
+                                     },
+                             "png":  {
+                                         "size":  130732,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/sofa_03/sofa_03_metal_8k.png",
+                                         "md5":  "000d871f6e52179ea8541ed5ebbb5e7a"
+                                     },
+                             "exr":  {
+                                         "size":  150384,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/sofa_03/sofa_03_metal_8k.exr",
+                                         "md5":  "b546cb94828dae38fff06855921f962b"
+                                     }
+                         },
+                  "4k":  {
+                             "jpg":  {
+                                         "size":  197004,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/sofa_03/sofa_03_metal_4k.jpg",
+                                         "md5":  "921d904a81bd79b20edf344db2775b2c"
+                                     },
+                             "png":  {
+                                         "size":  32763,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/sofa_03/sofa_03_metal_4k.png",
+                                         "md5":  "261834d04201f95d9188ee9c24a90bff"
+                                     },
+                             "exr":  {
+                                         "size":  42864,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/sofa_03/sofa_03_metal_4k.exr",
+                                         "md5":  "8226336abc90ec930896ef9ceee83d03"
+                                     }
+                         },
+                  "2k":  {
+                             "jpg":  {
+                                         "size":  49548,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/sofa_03/sofa_03_metal_2k.jpg",
+                                         "md5":  "55a2f4c6c290ccc7dca012bae0d5413e"
+                                     },
+                             "png":  {
+                                         "size":  8264,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/sofa_03/sofa_03_metal_2k.png",
+                                         "md5":  "d1b4236811cde253fe1d58c79386c101"
+                                     },
+                             "exr":  {
+                                         "size":  13296,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/sofa_03/sofa_03_metal_2k.exr",
+                                         "md5":  "5b3df5fc165a86a3526ffa24fff13a8b"
+                                     }
+                         },
+                  "1k":  {
+                             "jpg":  {
+                                         "size":  12684,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/sofa_03/sofa_03_metal_1k.jpg",
+                                         "md5":  "e8c0e6464de97eac1caa382a44a2682f"
+                                     },
+                             "png":  {
+                                         "size":  2155,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/sofa_03/sofa_03_metal_1k.png",
+                                         "md5":  "3984ebd3e0aff11d149c2c40985d22f3"
+                                     },
+                             "exr":  {
+                                         "size":  4784,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/sofa_03/sofa_03_metal_1k.exr",
+                                         "md5":  "7a64f4d2c18f1efbcecc009f80b09650"
+                                     }
+                         }
+              },
+    "opacity":  {
+                    "8k":  {
+                               "jpg":  {
+                                           "size":  912670,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/sofa_03/sofa_03_opacity_8k.jpg",
+                                           "md5":  "d468d29f8d03ec697b7a90917a15d965"
+                                       },
+                               "png":  {
+                                           "size":  423675,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/sofa_03/sofa_03_opacity_8k.png",
+                                           "md5":  "c286de802f0d96f99b571dce025bbea4"
+                                       },
+                               "exr":  {
+                                           "size":  436147,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/sofa_03/sofa_03_opacity_8k.exr",
+                                           "md5":  "6f6c97860a3eccc05f81eba9091e14f6"
+                                       }
+                           },
+                    "4k":  {
+                               "jpg":  {
+                                           "size":  259289,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/sofa_03/sofa_03_opacity_4k.jpg",
+                                           "md5":  "0a9dcc09a22338a9685c5f1b707bd2e8"
+                                       },
+                               "png":  {
+                                           "size":  167418,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/sofa_03/sofa_03_opacity_4k.png",
+                                           "md5":  "86be3cbbaed1ade92dad6753bf19f07d"
+                                       },
+                               "exr":  {
+                                           "size":  168057,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/sofa_03/sofa_03_opacity_4k.exr",
+                                           "md5":  "8ef7a83f9ff8e57b608628a8d06d5705"
+                                       }
+                           },
+                    "2k":  {
+                               "jpg":  {
+                                           "size":  74972,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/sofa_03/sofa_03_opacity_2k.jpg",
+                                           "md5":  "63954a0942602bedca399ed2d2be3935"
+                                       },
+                               "png":  {
+                                           "size":  61632,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/sofa_03/sofa_03_opacity_2k.png",
+                                           "md5":  "93ea48feb6a5b95708c3fc63935eae41"
+                                       },
+                               "exr":  {
+                                           "size":  63075,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/sofa_03/sofa_03_opacity_2k.exr",
+                                           "md5":  "63c4e552b936f73d86123d3dc4009e2a"
+                                       }
+                           },
+                    "1k":  {
+                               "jpg":  {
+                                           "size":  21613,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/sofa_03/sofa_03_opacity_1k.jpg",
+                                           "md5":  "e6034d75e3dc3eaca052c0dcaa5ed1a5"
+                                       },
+                               "png":  {
+                                           "size":  24606,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/sofa_03/sofa_03_opacity_1k.png",
+                                           "md5":  "31caada26019e56c95446313c28ba57d"
+                                       },
+                               "exr":  {
+                                           "size":  24528,
+                                           "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/sofa_03/sofa_03_opacity_1k.exr",
+                                           "md5":  "be27c7d5e3be771946741a3674f49995"
+                                       }
+                           }
+                },
+    "fbx":  {
+                "8k":  {
+                           "fbx":  {
+                                       "include":  {
+                                                       "textures/sofa_03_nor_gl_8k.exr":  {
+                                                                                              "size":  12116077,
+                                                                                              "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/sofa_03/sofa_03_nor_gl_8k.exr",
+                                                                                              "md5":  "0c1a36155f65c608cac4a3abbfe57216"
+                                                                                          },
+                                                       "textures/sofa_03_diff_8k.jpg":  {
+                                                                                            "size":  6408684,
+                                                                                            "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/sofa_03/sofa_03_diff_8k.jpg",
+                                                                                            "md5":  "6021dbd4fd8eb6332d899724cd3d90ad"
+                                                                                        },
+                                                       "textures/sofa_03_opacity_8k.png":  {
+                                                                                               "size":  423675,
+                                                                                               "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/sofa_03/sofa_03_opacity_8k.png",
+                                                                                               "md5":  "c286de802f0d96f99b571dce025bbea4"
+                                                                                           },
+                                                       "textures/sofa_03_rough_8k.jpg":  {
+                                                                                             "size":  6489395,
+                                                                                             "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/sofa_03/sofa_03_rough_8k.jpg",
+                                                                                             "md5":  "7a1bb21eeaff51378033357e3d23228e"
+                                                                                         }
+                                                   },
+                                       "size":  281644,
+                                       "url":  "https://dl.polyhaven.org/file/ph-assets/Models/fbx/8k/sofa_03/sofa_03_8k.fbx",
+                                       "md5":  "fef2bfcf6532c6511bc9918a1400d5b4"
+                                   }
+                       },
+                "4k":  {
+                           "fbx":  {
+                                       "include":  {
+                                                       "textures/sofa_03_opacity_4k.png":  {
+                                                                                               "size":  167418,
+                                                                                               "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/sofa_03/sofa_03_opacity_4k.png",
+                                                                                               "md5":  "86be3cbbaed1ade92dad6753bf19f07d"
+                                                                                           },
+                                                       "textures/sofa_03_diff_4k.jpg":  {
+                                                                                            "size":  2032258,
+                                                                                            "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/sofa_03/sofa_03_diff_4k.jpg",
+                                                                                            "md5":  "9ec019892ee95c1818d5926a205e42a1"
+                                                                                        },
+                                                       "textures/sofa_03_nor_gl_4k.exr":  {
+                                                                                              "size":  4586443,
+                                                                                              "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/sofa_03/sofa_03_nor_gl_4k.exr",
+                                                                                              "md5":  "348e87562922253c9afd47796d372c6d"
+                                                                                          },
+                                                       "textures/sofa_03_rough_4k.jpg":  {
+                                                                                             "size":  2188629,
+                                                                                             "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/sofa_03/sofa_03_rough_4k.jpg",
+                                                                                             "md5":  "4b02bd8bc57b21184724ff8f69406bde"
+                                                                                         }
+                                                   },
+                                       "size":  281644,
+                                       "url":  "https://dl.polyhaven.org/file/ph-assets/Models/fbx/4k/sofa_03/sofa_03_4k.fbx",
+                                       "md5":  "473754876f16558d65d96afbea478c4b"
+                                   }
+                       },
+                "2k":  {
+                           "fbx":  {
+                                       "include":  {
+                                                       "textures/sofa_03_rough_2k.jpg":  {
+                                                                                             "size":  613551,
+                                                                                             "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/sofa_03/sofa_03_rough_2k.jpg",
+                                                                                             "md5":  "258efb972b9f20676a4cad3405f44ae6"
+                                                                                         },
+                                                       "textures/sofa_03_opacity_2k.png":  {
+                                                                                               "size":  61632,
+                                                                                               "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/sofa_03/sofa_03_opacity_2k.png",
+                                                                                               "md5":  "93ea48feb6a5b95708c3fc63935eae41"
+                                                                                           },
+                                                       "textures/sofa_03_diff_2k.jpg":  {
+                                                                                            "size":  563414,
+                                                                                            "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/sofa_03/sofa_03_diff_2k.jpg",
+                                                                                            "md5":  "38aeca485a17eb8345a2e6a623d0294c"
+                                                                                        },
+                                                       "textures/sofa_03_nor_gl_2k.exr":  {
+                                                                                              "size":  1763068,
+                                                                                              "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/sofa_03/sofa_03_nor_gl_2k.exr",
+                                                                                              "md5":  "c27a0bea6175d5689b69494337000a22"
+                                                                                          }
+                                                   },
+                                       "size":  281644,
+                                       "url":  "https://dl.polyhaven.org/file/ph-assets/Models/fbx/2k/sofa_03/sofa_03_2k.fbx",
+                                       "md5":  "9046a6c04a416429bf205dd68eb67aa2"
+                                   }
+                       },
+                "1k":  {
+                           "fbx":  {
+                                       "include":  {
+                                                       "textures/sofa_03_nor_gl_1k.exr":  {
+                                                                                              "size":  655796,
+                                                                                              "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/sofa_03/sofa_03_nor_gl_1k.exr",
+                                                                                              "md5":  "ceacabeb3f4411ed807f9c3cf883f189"
+                                                                                          },
+                                                       "textures/sofa_03_rough_1k.jpg":  {
+                                                                                             "size":  170206,
+                                                                                             "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/sofa_03/sofa_03_rough_1k.jpg",
+                                                                                             "md5":  "c3fe733eb2cef0424d5530e067518d60"
+                                                                                         },
+                                                       "textures/sofa_03_opacity_1k.png":  {
+                                                                                               "size":  24606,
+                                                                                               "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/sofa_03/sofa_03_opacity_1k.png",
+                                                                                               "md5":  "31caada26019e56c95446313c28ba57d"
+                                                                                           },
+                                                       "textures/sofa_03_diff_1k.jpg":  {
+                                                                                            "size":  151815,
+                                                                                            "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/sofa_03/sofa_03_diff_1k.jpg",
+                                                                                            "md5":  "1f33a1431d98e1560a04b661e786b45b"
+                                                                                        }
+                                                   },
+                                       "size":  281644,
+                                       "url":  "https://dl.polyhaven.org/file/ph-assets/Models/fbx/1k/sofa_03/sofa_03_1k.fbx",
+                                       "md5":  "b3ea4523f917f6cb7151d83d798ae993"
+                                   }
+                       }
+            },
+    "arm":  {
+                "8k":  {
+                           "jpg":  {
+                                       "size":  6678961,
+                                       "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/sofa_03/sofa_03_arm_8k.jpg",
+                                       "md5":  "e546b189b7859cfff81d02040ebceb3f"
+                                   },
+                           "png":  {
+                                       "size":  130132273,
+                                       "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/sofa_03/sofa_03_arm_8k.png",
+                                       "md5":  "661155485a085317a1b8f93b6ed26682"
+                                   },
+                           "exr":  {
+                                       "size":  61412890,
+                                       "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/sofa_03/sofa_03_arm_8k.exr",
+                                       "md5":  "9c76b2542c3b208cfe632f10e2e572e2"
+                                   }
+                       },
+                "4k":  {
+                           "jpg":  {
+                                       "size":  2138580,
+                                       "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/sofa_03/sofa_03_arm_4k.jpg",
+                                       "md5":  "7ecd3ec126d6be86bfbd024c19fef688"
+                                   },
+                           "png":  {
+                                       "size":  42898904,
+                                       "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/sofa_03/sofa_03_arm_4k.png",
+                                       "md5":  "c182ce1eb61d4a6ea5d88af59f48983d"
+                                   },
+                           "exr":  {
+                                       "size":  19442991,
+                                       "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/sofa_03/sofa_03_arm_4k.exr",
+                                       "md5":  "f232f775778c47d88ffadcc30cf00b82"
+                                   }
+                       },
+                "2k":  {
+                           "jpg":  {
+                                       "size":  628931,
+                                       "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/sofa_03/sofa_03_arm_2k.jpg",
+                                       "md5":  "f908b0d6e1887a333d0d19f9e72bed5a"
+                                   },
+                           "png":  {
+                                       "size":  12463088,
+                                       "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/sofa_03/sofa_03_arm_2k.png",
+                                       "md5":  "8b1946b7ec3cf532480b6113b0690b00"
+                                   },
+                           "exr":  {
+                                       "size":  5744567,
+                                       "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/sofa_03/sofa_03_arm_2k.exr",
+                                       "md5":  "07be531127bfffde743773485cf747b5"
+                                   }
+                       },
+                "1k":  {
+                           "jpg":  {
+                                       "size":  186743,
+                                       "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/sofa_03/sofa_03_arm_1k.jpg",
+                                       "md5":  "2e636dd33ef68ad9d32d9245bfe20af7"
+                                   },
+                           "png":  {
+                                       "size":  3386767,
+                                       "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/sofa_03/sofa_03_arm_1k.png",
+                                       "md5":  "d8562cbcbc3c2f423995c396cbcf5885"
+                                   },
+                           "exr":  {
+                                       "size":  1638500,
+                                       "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/sofa_03/sofa_03_arm_1k.exr",
+                                       "md5":  "75a0ba09a140b5feaec15a41d206111e"
+                                   }
+                       }
+            },
+    "Rough":  {
+                  "8k":  {
+                             "jpg":  {
+                                         "size":  6489395,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/sofa_03/sofa_03_rough_8k.jpg",
+                                         "md5":  "7a1bb21eeaff51378033357e3d23228e"
+                                     },
+                             "png":  {
+                                         "size":  24298819,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/sofa_03/sofa_03_rough_8k.png",
+                                         "md5":  "147faad0e321e6f5f4daf4774a7ad6d3"
+                                     },
+                             "exr":  {
+                                         "size":  32083839,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/sofa_03/sofa_03_rough_8k.exr",
+                                         "md5":  "07c015503c9942d69cd1356644c6591a"
+                                     }
+                         },
+                  "4k":  {
+                             "jpg":  {
+                                         "size":  2188629,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/sofa_03/sofa_03_rough_4k.jpg",
+                                         "md5":  "4b02bd8bc57b21184724ff8f69406bde"
+                                     },
+                             "png":  {
+                                         "size":  18695364,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/sofa_03/sofa_03_rough_4k.png",
+                                         "md5":  "da48f47ead1effd99ff3c73fcc987691"
+                                     },
+                             "exr":  {
+                                         "size":  13718471,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/sofa_03/sofa_03_rough_4k.exr",
+                                         "md5":  "24b1e39fb6a529c5d1eaf0f7d1a2eaba"
+                                     }
+                         },
+                  "2k":  {
+                             "jpg":  {
+                                         "size":  613551,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/sofa_03/sofa_03_rough_2k.jpg",
+                                         "md5":  "258efb972b9f20676a4cad3405f44ae6"
+                                     },
+                             "png":  {
+                                         "size":  6071506,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/sofa_03/sofa_03_rough_2k.png",
+                                         "md5":  "77a184d19b9bacde49fbcdbda0006285"
+                                     },
+                             "exr":  {
+                                         "size":  4105054,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/sofa_03/sofa_03_rough_2k.exr",
+                                         "md5":  "eaf0872312c80aa1b246b393d0787323"
+                                     }
+                         },
+                  "1k":  {
+                             "jpg":  {
+                                         "size":  170206,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/sofa_03/sofa_03_rough_1k.jpg",
+                                         "md5":  "c3fe733eb2cef0424d5530e067518d60"
+                                     },
+                             "png":  {
+                                         "size":  1674090,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/sofa_03/sofa_03_rough_1k.png",
+                                         "md5":  "f510b5e6653d1e787b598131267147bc"
+                                     },
+                             "exr":  {
+                                         "size":  1115270,
+                                         "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/sofa_03/sofa_03_rough_1k.exr",
+                                         "md5":  "fc0305994935488afc946641cd677862"
+                                     }
+                         }
+              },
+    "AO":  {
+               "8k":  {
+                          "jpg":  {
+                                      "size":  3632475,
+                                      "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/sofa_03/sofa_03_ao_8k.jpg",
+                                      "md5":  "7e0988b2f14fc9a01dd4c1f6ee983995"
+                                  },
+                          "png":  {
+                                      "size":  67751560,
+                                      "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/sofa_03/sofa_03_ao_8k.png",
+                                      "md5":  "4af9d8f85e4cb2ca4a908a51347a60df"
+                                  },
+                          "exr":  {
+                                      "size":  47355203,
+                                      "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/sofa_03/sofa_03_ao_8k.exr",
+                                      "md5":  "4bf2dbfc0074c07efdcda4565c439aec"
+                                  }
+                      },
+               "4k":  {
+                          "jpg":  {
+                                      "size":  793736,
+                                      "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/sofa_03/sofa_03_ao_4k.jpg",
+                                      "md5":  "748f411d0a00c65627ceb819edb2e905"
+                                  },
+                          "png":  {
+                                      "size":  17580347,
+                                      "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/sofa_03/sofa_03_ao_4k.png",
+                                      "md5":  "95556d65c41aacb6efed7f2538a74c33"
+                                  },
+                          "exr":  {
+                                      "size":  11873191,
+                                      "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/sofa_03/sofa_03_ao_4k.exr",
+                                      "md5":  "442846bfe90bda1637d9cfeeaf3f9ff7"
+                                  }
+                      },
+               "2k":  {
+                          "jpg":  {
+                                      "size":  272417,
+                                      "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/sofa_03/sofa_03_ao_2k.jpg",
+                                      "md5":  "094d7f8e5cf626620a4f4ec9873ce6e5"
+                                  },
+                          "png":  {
+                                      "size":  4438650,
+                                      "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/sofa_03/sofa_03_ao_2k.png",
+                                      "md5":  "daa1bd9d22ea081738478e7854e502ab"
+                                  },
+                          "exr":  {
+                                      "size":  2991689,
+                                      "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/sofa_03/sofa_03_ao_2k.exr",
+                                      "md5":  "71137b06c51380e5233f1eebcc83649d"
+                                  }
+                      },
+               "1k":  {
+                          "jpg":  {
+                                      "size":  101574,
+                                      "url":  "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/sofa_03/sofa_03_ao_1k.jpg",
+                                      "md5":  "1e44a7b3a5c2ba3dba3879fa6af6ec91"
+                                  },
+                          "png":  {
+                                      "size":  1143345,
+                                      "url":  "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/sofa_03/sofa_03_ao_1k.png",
+                                      "md5":  "b1bbf49349bf01a9370dea6b0ab07c9d"
+                                  },
+                          "exr":  {
+                                      "size":  808215,
+                                      "url":  "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/sofa_03/sofa_03_ao_1k.exr",
+                                      "md5":  "d221cea0ebfb29316a8456cba68db8f4"
+                                  }
+                      }
+           }
+}

@@ -6,13 +6,14 @@
 // o en el PATH del sistema.
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { NodeIO } from '@gltf-transform/core';
 import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
-import { dedup, meshopt, prune, weld } from '@gltf-transform/functions';
+import { dedup, meshopt, prune, weld, textureCompress } from '@gltf-transform/functions';
+import sharp from 'sharp';
 import { MeshoptEncoder } from 'meshoptimizer';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -21,11 +22,19 @@ const MODELS = [
     id: 'torre-natalini',
     blend: 'modelos/Torre_Natalini/Torre_Natalini_Interpretativa.blend',
     script: 'scripts/blender/export_web.py',
+    rebuild: 'scripts/blender/rebuild_archviz.py',
   },
 ];
 
 function findBlender() {
   if (process.env.BLENDER_PATH && existsSync(process.env.BLENDER_PATH)) return process.env.BLENDER_PATH;
+  const foundation = join(process.env.ProgramFiles ?? 'C:/Program Files', 'Blender Foundation');
+  if (existsSync(foundation)) {
+    for (const dir of readdirSync(foundation).sort().reverse()) {
+      const binary = join(foundation, dir, 'blender.exe');
+      if (existsSync(binary)) return binary;
+    }
+  }
   const tools = join(homedir(), 'tools');
   if (existsSync(tools)) {
     const dir = readdirSync(tools).filter((d) => d.startsWith('blender-4.5')).sort().pop();
@@ -50,7 +59,10 @@ async function main() {
   for (const model of MODELS) {
     const raw = join(cacheDir, `${model.id}.raw.glb`);
     console.log(`\n▸ ${model.id}: exportando desde Blender (${blender})`);
-    const run = spawnSync(blender, ['-b', join(ROOT, model.blend), '--factory-startup', '--python', join(ROOT, model.script), '--', raw], {
+    const args = ['--background', '--factory-startup', join(ROOT, model.blend), '--python-exit-code', '1'];
+    if (model.rebuild) args.push('--python', join(ROOT, model.rebuild));
+    args.push('--python', join(ROOT, model.script), '--', raw);
+    const run = spawnSync(blender, args, {
       encoding: 'utf8',
       maxBuffer: 64 * 1024 * 1024,
     });
@@ -63,14 +75,14 @@ async function main() {
 
     // Optimización: piezas repetidas, vértices soldados y compresión meshopt (cuantiza y comprime).
     const doc = await io.read(raw);
-    await doc.transform(dedup(), weld(), prune({ keepLeaves: true, keepExtras: true }), meshopt({ encoder: MeshoptEncoder, level: 'medium' }));
+    await doc.transform(dedup(), weld(), prune({ keepLeaves: true, keepExtras: true }),
+      textureCompress({ encoder: sharp, targetFormat: 'webp', quality: 88 }),
+      meshopt({ encoder: MeshoptEncoder, level: 'medium' }));
     const glb = await io.writeBinary(doc);
     const hash = createHash('sha256').update(glb).digest('hex').slice(0, 10);
     const fileName = `${model.id}.${hash}.glb`;
 
-    for (const old of readdirSync(outDir)) {
-      if (old.startsWith(`${model.id}.`) && old.endsWith('.glb') && old !== fileName) rmSync(join(outDir, old));
-    }
+    // Los GLB anteriores se conservan: enlaces con hash y despliegues previos siguen válidos.
     writeFileSync(join(outDir, fileName), glb);
     manifest[model.id] = { url: `/models/${fileName}`, bytes: glb.byteLength };
     console.log(`  ${kb(statSync(raw).size)} → ${kb(glb.byteLength)}  public/models/${fileName}`);

@@ -1,6 +1,6 @@
 'use client';
 
-import { Sky, useGLTF } from '@react-three/drei';
+import { Environment, Sky, useGLTF } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
@@ -9,6 +9,8 @@ import { Player } from './Player';
 import { Surroundings } from './Surroundings';
 import { prepareWorld, type LightAnchor, type WorldData } from './prepareWorld';
 import { useCurtain } from '@/components/transition/curtain-store';
+import { useExperience } from './store';
+import { ArchvizPost } from './ArchvizPost';
 
 // Escena del recorrido: modelo de la torre, luces, cielo, entorno, MARQ Bus y visitante.
 
@@ -47,6 +49,9 @@ export function World({ url, debug, onReady }: { url: string; debug: boolean; on
   const gltf = useGLTF(url); // decodifica meshopt automáticamente
   const gl = useThree((s) => s.gl);
   const scene = useThree((s) => s.scene);
+  const atmosphere = useExperience((s) => s.atmosphere);
+  const sunlight = useRef<THREE.DirectionalLight>(null);
+  const lastInterior = useRef<boolean | null>(null);
 
   // Copia propia de la escena: el caché de useGLTF queda intacto si se vuelve a entrar.
   const model = useMemo(() => gltf.scene.clone(true), [gltf]);
@@ -59,6 +64,10 @@ export function World({ url, debug, onReady }: { url: string; debug: boolean; on
   // Antes de mostrarla se compilan todos los shaders en segundo plano (compileAsync usa
   // KHR_parallel_shader_compile): así no hay congelamientos al cargar ni al girar la cámara.
   const camera = useThree((s) => s.camera);
+  useEffect(() => {
+    gl.toneMappingExposure = atmosphere === 'dia' ? 1.05 : .94;
+    gl.shadowMap.needsUpdate = true;
+  }, [gl, atmosphere]);
   const warmup = useRef(4);
   useEffect(() => {
     let cancelled = false;
@@ -88,26 +97,39 @@ export function World({ url, debug, onReady }: { url: string; debug: boolean; on
     return o;
   }, []);
   const sunPosition = useMemo(() => sunTarget.position.clone().addScaledVector(sunDir, -140), [sunTarget, sunDir]);
+  useFrame(() => {
+    const inside = camera.position.y > 10;
+    if (inside === lastInterior.current || !sunlight.current) return;
+    lastInterior.current = inside;
+    const light = sunlight.current;
+    // La resolución se concentra en el departamento cuando el visitante está arriba.
+    sunTarget.position.set(inside ? -3.2 : 0, inside ? world.levels.at(-1)! + 1.2 : 2, inside ? -4.6 : -5);
+    sunTarget.updateMatrixWorld();
+    light.position.copy(sunTarget.position).addScaledVector(sunDir, -100);
+    const extent = inside ? 7.5 : 25;
+    Object.assign(light.shadow.camera, { left: -extent, right: extent, top: extent, bottom: -extent, near: 50, far: 160 });
+    light.shadow.camera.updateProjectionMatrix();
+    gl.shadowMap.needsUpdate = true;
+  });
 
   return (
     <>
       <Sky distance={2000} sunPosition={sunDir.clone().multiplyScalar(-1000).toArray()} turbidity={5} rayleigh={0.9} mieCoefficient={0.004} mieDirectionalG={0.82} />
       <fog attach="fog" args={['#dfe5e8', 140, 900]} />
-      {/* Sin mapa de entorno (PMREM): generarlo compila shaders pesados de forma sincrónica y en
-          Windows congelaba la carga ~2 s. La luz ambiente se resuelve con hemisférica + ambiental. */}
-      <hemisphereLight args={['#f1f5f8', '#b7ae9e', 1.35]} />
-      <ambientLight intensity={0.35} color="#fff8ee" />
+      <Environment files="/archviz/rooftop_day/hdri.hdr" environmentIntensity={0.65} />
+      <hemisphereLight args={['#e6eef5', '#b8ac98', 0.36]} />
       <primitive object={sunTarget} />
       <directionalLight
+        ref={sunlight}
         position={sunPosition}
         target={sunTarget}
-        intensity={2.6}
-        color="#fff4e2"
+        intensity={atmosphere === 'dia' ? 2.8 : 1.85}
+        color={atmosphere === 'dia' ? '#fff4e4' : '#ffd8ab'}
         castShadow
         shadow-mapSize={[4096, 4096]}
-        shadow-bias={-0.0004}
-        shadow-normalBias={0.04}
-        shadow-radius={2}
+        shadow-bias={-0.00006}
+        shadow-normalBias={0.012}
+        shadow-radius={3}
         shadow-camera-left={-48}
         shadow-camera-right={48}
         shadow-camera-top={48}
@@ -120,13 +142,14 @@ export function World({ url, debug, onReady }: { url: string; debug: boolean; on
 
       {/* Luces interiores, agrupadas a partir de las luminarias del modelo de Blender. */}
       {interiorLights.map((l, i) => (
-        <pointLight key={i} position={l.position} intensity={Math.min(240, l.energy * 0.32)} distance={14} decay={1.6} color={INTERIOR_LIGHT} />
+        <pointLight key={i} position={l.position} intensity={Math.min(85, l.energy * 0.25)} distance={12} decay={2} color={INTERIOR_LIGHT} />
       ))}
       <primitive object={world.cabin} />
 
       <Surroundings />
       <MarqBus position={world.bus} />
       <Player world={world} debug={debug} />
+      <ArchvizPost />
     </>
   );
 }

@@ -14,11 +14,11 @@ import type { WorldData } from './prepareWorld';
 // el cuerpo es una cápsula que colisiona contra el BVH del modelo.
 
 const EYE = 1.65;
-const RADIUS = 0.22; // pasa por las puertas de 0,5 m del modelo
+const RADIUS = 0.23;
 const SEG_TOP = 0.1 - RADIUS; // la cápsula llega 10 cm por encima de los ojos
 const SEG_BOTTOM = -EYE + RADIUS; // y apoya en el piso
-const WALK = 2.4;
-const RUN = 4.6;
+const WALK = 1.35;
+const RUN = 2.4;
 const GRAVITY = -24;
 const SUBSTEPS = 5;
 const CABIN_FLOOR = 0.08; // altura del piso de la cabina respecto de su origen
@@ -50,7 +50,7 @@ export function Player({ world, debug }: { world: WorldData; debug: boolean }) {
     onGround: false,
     safe: world.spawn.clone().add(new THREE.Vector3(0, EYE, 0)),
     prev: new THREE.Vector3(),
-    level: 0,
+    level: world.initialLevel,
     ride: null as null | { from: number; to: number; t: number; target: number },
     bob: 0,
     frame: 0,
@@ -61,6 +61,25 @@ export function Player({ world, debug }: { world: WorldData; debug: boolean }) {
     camera.position.copy(s.current.pos);
     camera.lookAt(world.lookAt);
     gl.shadowMap.needsUpdate = true;
+  }, [camera, gl, world]);
+
+  useEffect(() => {
+    const visit = (id: string) => {
+      const view = world.views.find((v) => v.id === id);
+      if (!view || s.current.ride) return;
+      const st = s.current;
+      st.pos.copy(view.position).add(new THREE.Vector3(0, EYE + 0.025, 0));
+      st.safe.copy(st.pos);
+      st.vel.set(0, 0, 0);
+      st.bob = 0;
+      pressed.current.clear();
+      st.level = view.position.y > 10 ? world.levels.length - 1 : 0;
+      world.cabin.position.y = world.levels[st.level];
+      camera.position.copy(st.pos);
+      camera.lookAt(view.target);
+      gl.shadowMap.needsUpdate = true;
+    };
+    useExperience.getState().setVisit(visit, world.views.map(({ id, label }) => ({ id, label })));
   }, [camera, gl, world]);
 
   // Teclado.
@@ -120,6 +139,7 @@ export function Player({ world, debug }: { world: WorldData; debug: boolean }) {
       interact: () => current.current?.action(),
     };
     (window as unknown as { marq: typeof api }).marq = api;
+    return () => { delete (window as unknown as { marq?: typeof api }).marq; };
   }, [debug, camera]);
 
   const forward = useRef(new THREE.Vector3()).current;
@@ -218,7 +238,7 @@ export function Player({ world, debug }: { world: WorldData; debug: boolean }) {
     }
 
     camera.position.copy(st.pos);
-    camera.position.y += Math.sin(st.bob) * 0.028;
+    // Cámara estable: evita el vaivén de videojuego y facilita apreciar las proporciones.
 
     // Interacciones disponibles.
     let next: Interactable | null = null;
@@ -253,6 +273,7 @@ export function Player({ world, debug }: { world: WorldData; debug: boolean }) {
       selector="#marq-lock-target"
       onLock={() => useExperience.getState().setPhase('playing')}
       onUnlock={() => {
+        if (debug) return;
         const { phase } = useExperience.getState();
         if (phase === 'playing') useExperience.getState().setPhase('paused');
       }}

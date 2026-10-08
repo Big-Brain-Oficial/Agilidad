@@ -17,6 +17,13 @@ interface ExperienceState {
   lockError: boolean;
   /** Bloquea el puntero (lo registra el control de primera persona). */
   lock: () => void;
+  quality: 'alta' | 'fluida';
+  atmosphere: 'dia' | 'tarde';
+  views: { id: string; label: string }[];
+  visit: (id: string) => void;
+  setVisit: (visit: (id: string) => void, views: { id: string; label: string }[]) => void;
+  setQuality: (quality: 'alta' | 'fluida') => void;
+  setAtmosphere: (atmosphere: 'dia' | 'tarde') => void;
   setPhase: (phase: Phase) => void;
   setZona: (zona: ZonaId) => void;
   setPrompt: (prompt: string | null) => void;
@@ -34,6 +41,13 @@ export const useExperience = create<ExperienceState>((set, get) => ({
   riding: false,
   lockError: false,
   lock: () => {},
+  quality: 'alta',
+  atmosphere: 'dia',
+  views: [],
+  visit: () => {},
+  setVisit: (visit, views) => set({ visit, views }),
+  setQuality: (quality) => set({ quality }),
+  setAtmosphere: (atmosphere) => set({ atmosphere }),
   setPhase: (phase) => set(phase === 'playing' ? { phase, lockError: false } : { phase }),
   setZona: (zona) => set({ zona }),
   setPrompt: (prompt) => {
@@ -47,5 +61,5 @@ export const useExperience = create<ExperienceState>((set, get) => ({
     set({ phase: 'leaving', prompt: null });
     if (typeof document !== 'undefined' && document.pointerLockElement) document.exitPointerLock();
   },
-  reset: () => set({ phase: 'loading', zona: 'exterior', prompt: null, riding: false, lockError: false }),
+  reset: () => set({ phase: 'loading', zona: 'exterior', prompt: null, riding: false, lockError: false, views: [], visit: () => {}, lock: () => {} }),
 }));

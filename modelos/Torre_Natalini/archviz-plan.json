@@ -1,0 +1,26 @@
+{
+  "units": "meters",
+  "source": "mejoras/planimetria.webp",
+  "publishedTotalArea": 97,
+  "publishedAreaIsNetInterior": false,
+  "rooms": {
+    "living": { "label": "Estar-comedor", "width": 5.4, "depth": 3.4, "origin": [1.55, 0], "dimensionSource": "printed" },
+    "kitchen": { "label": "Cocina", "width": 1.6, "depth": 3.35, "origin": [6.95, 0], "dimensionSource": "printed" },
+    "bedroom1": { "label": "Dormitorio principal", "width": 3.9, "depth": 2.7, "origin": [0, 6.42], "dimensionSource": "printed" },
+    "bedroom2": { "label": "Dormitorio secundario", "width": 3.6, "depth": 2.7, "origin": [0, 3.54], "dimensionSource": "printed" },
+    "bathroom": { "label": "Baño", "width": 1.2, "depth": 2.95, "origin": [4.02, 6.17], "dimensionSource": "printed" },
+    "toilet": { "label": "Toilette", "width": 1.3, "depth": 1.4, "origin": [6.95, 5.2], "dimensionSource": "printed" },
+    "balcony": { "label": "Balcón", "width": 1.45, "depth": 2.5, "origin": [0, 0], "dimensionSource": "printed" }
+  },
+  "assumptions": {
+    "clearHeight": 2.75,
+    "internalWall": 0.12,
+    "externalWall": 0.18,
+    "doorHeight": 2.18,
+    "bedroomDoorWidth": 0.82,
+    "bathroomDoorWidth": 0.78,
+    "entryDoorWidth": 0.9,
+    "apartmentOffset": [-7.5, 0],
+    "note": "Alturas, espesores, huecos, posiciones relativas, núcleo y nivel son interpretaciones. Las cotas impresas se respetan como dimensiones libres de los sectores rectangulares; no se fuerza la superficie neta a 97 m². El segundo dormitorio conserva un anexo de placard fuera de su rectángulo acotado."
+  }
+}
