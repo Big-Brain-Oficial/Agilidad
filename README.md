@@ -1,12 +1,24 @@
 # MARQ Experience
 
-Mapa 2D de los desarrollos de MARQ y recorrido 3D en primera persona por la Torre Natalini: vereda, hall, ascensor y departamento. El **MARQ Bus** te lleva de vuelta al mapa.
+Plataforma inmobiliaria inmersiva para [MARQ](https://estudiomarq.com.ar): un **mapa 2D** con los desarrollos del estudio y un **recorrido 3D en primera persona** por la Torre Natalini (vereda, hall, ascensor y departamento muestra). El **MARQ Bus** estacionado frente al edificio lleva de vuelta al mapa.
+
+**Producción:** https://estudiomarq.vercel.app
 
 La arquitectura y las decisiones técnicas están en [ARQUITECTURA.md](ARQUITECTURA.md).
 
+## Qué incluye
+
+- **Mapa 2D** (`/`): plano ilustrado con 10 desarrollos, filtros por tipo, ficha de cada uno, zoom y desplazamiento. Funciona en computadora y en celular.
+- **Recorrido 3D** (`/recorrido/torre-natalini`): primera persona con colisiones, ascensor entre el hall y el departamento, y textos por zona. Por ahora solo en computadora con teclado y mouse; en el celular se muestra un aviso.
+- **Transición** entre ambos con una cortina que muestra el progreso de carga del modelo.
+
+## Stack
+
+Next.js 16 (App Router) · React 19 · TypeScript · Three.js + React Three Fiber + drei · three-mesh-bvh · zustand. Modelo 3D generado desde Blender 4.5 LTS y optimizado con gltf-transform + meshoptimizer. Sin base de datos ni variables de entorno.
+
 ## Correr el proyecto
 
-Requiere Node 20 o superior.
+Requiere **Node 20 o superior**.
 
 ```bash
 npm install
@@ -20,19 +32,56 @@ npm run build
 npm start
 ```
 
-## Deploy en Vercel
+| Comando | Qué hace |
+|---|---|
+| `npm run dev` | Servidor de desarrollo |
+| `npm run build` | Build de producción (también chequea tipos) |
+| `npm start` | Sirve el build de producción |
+| `npm run typecheck` | Chequeo de tipos de TypeScript |
+| `npm run model:build` | Regenera el GLB desde el `.blend` (necesita Blender) |
 
-Importar el repositorio en Vercel: detecta Next.js solo. No hace falta configurar variables de entorno ni base de datos.
+El aviso `THREE.Clock: This module has been deprecated` en la consola viene de React Three Fiber y no afecta el funcionamiento.
 
-## Modelo 3D
+## Controles del recorrido
 
-El GLB que usa la web ya está en `public/models/`. Solo hay que regenerarlo si cambia el `.blend`:
+| Tecla | Acción |
+|---|---|
+| Mouse | Mirar |
+| W A S D o flechas | Caminar |
+| Shift | Correr |
+| E o clic | Usar el ascensor · subir al MARQ Bus |
+| Esc | Pausa (desde ahí también se vuelve al mapa) |
 
-```bash
-npm run model:build
+## Ramas y deploy
+
+El sitio está en **Vercel**, conectado a este repositorio:
+
+| Rama | Resultado |
+|---|---|
+| `main` | Se publica automáticamente en **estudiomarq.vercel.app** |
+| Cualquier otra | Vercel arma una versión de prueba (*Preview*) con su propia dirección |
+
+Flujo de trabajo:
+
+1. Crear una rama desde `main` (por ejemplo `fix/...` o `feat/...`) y subirla.
+2. Abrir un pull request. El enlace a la versión de prueba aparece en el pull request.
+3. Probar ahí, sobre todo el recorrido 3D con un clic real en "Comenzar recorrido".
+4. Hacer merge a `main` para publicar.
+
+No hace falta configurar nada en Vercel: detecta Next.js solo.
+
+## Estructura
+
 ```
-
-Necesita **Blender 4.5 LTS**. El script lo busca en `BLENDER_PATH`, en `C:\Users\<usuario>\tools\blender-4.5.*` o en el `PATH`.
+modelos/Torre_Natalini/      fuente del modelo: .blend, script generador, guía y referencias
+scripts/                     pipeline Blender → GLB (export_web.py + build-model.mjs)
+public/models/               GLB publicados (con hash en el nombre)
+src/app/                     rutas: / (mapa) y /recorrido/[slug] (3D)
+src/content/                 textos y datos de los desarrollos y del recorrido
+src/components/map/          plano SVG, pan/zoom, marcadores y ficha
+src/components/transition/   cortina entre rutas
+src/components/experience/   escena 3D, visitante, colisiones, MARQ Bus y HUD
+```
 
 ## Editar contenido
 
@@ -42,7 +91,21 @@ Necesita **Blender 4.5 LTS**. El script lo busca en `BLENDER_PATH`, en `C:\Users
 | Textos de cada zona del recorrido | `src/content/recorridos.ts` |
 | Plano ilustrado: calles, loteos, lagunas, rótulos | `src/components/map/mapGeometry.ts` |
 
-Los textos salen de estudiomarq.com.ar y hay que **validarlos con MARQ** antes de publicar.
+Los textos salen de estudiomarq.com.ar y hay que **validarlos con MARQ**. Las posiciones del mapa son de un plano ilustrado, no coordenadas geográficas.
+
+## Modelo 3D
+
+El GLB que usa la web ya está en `public/models/`. Solo hay que regenerarlo si cambia el `.blend`:
+
+```bash
+npm run model:build
+```
+
+Necesita **Blender 4.5 LTS**. El script lo busca en `BLENDER_PATH`, en `C:\Users\<usuario>\tools\blender-4.5.*` o en el `PATH`. Escribe el GLB nuevo y actualiza `src/content/modelos.generated.json`; no hay que editar esos archivos a mano.
+
+El modelo de la Torre Natalini es **interpretativo**: la volumetría, el piso y la ubicación del departamento son aproximados. Ver [GUIA_MODELO.md](modelos/Torre_Natalini/GUIA_MODELO.md).
+
+Para sumar otro edificio con recorrido 3D, seguir la sección 7 de [ARQUITECTURA.md](ARQUITECTURA.md).
 
 ## Depuración
 
@@ -52,3 +115,15 @@ Los textos salen de estudiomarq.com.ar y hay que **validarlos con MARQ** antes d
 - `marq.teleport(x, y, z)`: mueve al visitante.
 - `marq.look(yaw, pitch)`: orienta la mirada.
 - `marq.interact()`: equivale a apretar E.
+
+El modo `?debug` saltea la captura del mouse: un recorrido que anda con `?debug` puede fallar sin él. Probar siempre también sin `?debug`.
+
+## Pendientes
+
+- Validar textos con MARQ y regenerar el modelo con los planos reales (planta tipo, cortes, piso del departamento).
+- Recorrido 3D en celular (joystick en pantalla y arrastre para mirar).
+- Recorridos 3D para otros desarrollos.
+- Materiales con texturas e iluminación horneada.
+- Lint, tests y CI (hoy solo hay chequeo de tipos).
+
+Detalle en la sección 9 de [ARQUITECTURA.md](ARQUITECTURA.md).
