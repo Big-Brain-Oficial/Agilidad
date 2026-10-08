@@ -268,8 +268,11 @@ export function Player({ world, debug }: { world: WorldData; debug: boolean }) {
     }
   });
 
+  // domElement explícito: por defecto drei usa el contenedor de eventos de R3F (el div que
+  // envuelve al canvas), pero el bloqueo se pide sobre el canvas y no detectaría el cambio.
   return (
     <PointerLockControls
+      domElement={gl.domElement}
       selector="#marq-lock-target"
       onLock={() => useExperience.getState().setPhase('playing')}
       onUnlock={() => {
