@@ -1,0 +1,146 @@
+# MARQ Experience: arquitectura técnica
+
+Plataforma inmobiliaria inmersiva para MARQ. Un **mapa 2D** de los desarrollos funciona como pantalla principal; desde ahí se entra a una **exploración 3D en primera persona**. Hoy hay recorrido 3D para la Torre Natalini. El **MARQ Bus** que espera frente al edificio devuelve al mapa.
+
+```
+ Mapa 2D (/)                          Recorrido 3D (/recorrido/torre-natalini)
+ ┌──────────────────────┐   clic en   ┌─────────────────────────────────────────┐
+ │ plano ilustrado      │  marcador   │ vereda → hall → ascensor → departamento │
+ │ marcadores + ficha   │ ──────────▶ │ primera persona, colisiones             │
+ │ filtros, zoom        │ ◀────────── │ MARQ Bus (E) = volver al mapa           │
+ └──────────────────────┘   cortina   └─────────────────────────────────────────┘
+```
+
+## 1. Stack
+
+| Capa | Tecnología | Motivo |
+|---|---|---|
+| Framework | Next.js 16 (App Router) + TypeScript | Rutas compartibles, *code splitting* por ruta, deploy nativo en Vercel |
+| 3D | Three.js r186 + React Three Fiber 9 + drei | Escena declarativa en React; carga de GLB, controles y cielo listos |
+| Colisiones | three-mesh-bvh | Consultas rápidas cápsula–triángulo sobre todo el modelo, sin motor de física |
+| Estado | zustand | Estado compartido entre la escena (dentro del `<Canvas>`) y la interfaz HTML |
+| Modelo | Blender 4.5 LTS + gltf-transform + meshoptimizer | Conversión reproducible del `.blend` a GLB optimizado |
+| Datos | Archivos TypeScript/JSON en el repo | Sin base de datos: alcanza para el contenido actual |
+
+## 2. Estructura
+
+```
+modelos/Torre_Natalini/          fuente: .blend, script generador, guía y referencias
+scripts/
+  blender/export_web.py          .blend → GLB (corre dentro de Blender, sin interfaz)
+  build-model.mjs                orquesta Blender + optimización + nombre con hash
+public/models/                   GLB publicados (torre-natalini.<hash>.glb)
+src/
+  app/
+    page.tsx                     /  → mapa 2D
+    recorrido/[slug]/page.tsx    /recorrido/torre-natalini → recorrido 3D
+    layout.tsx                   tipografías y cortina de transición
+  content/
+    desarrollos.ts               desarrollos del mapa (textos, posición, recorrido 3D)
+    recorridos.ts                textos por zona del recorrido
+    modelos.generated.json       URL del GLB vigente (lo escribe build-model)
+  components/
+    map/                         plano SVG, pan/zoom, marcadores y panel
+    transition/                  cortina persistente entre rutas
+    experience/                  escena 3D, visitante, colisiones, bus, HUD
+```
+
+## 3. Carga y rendimiento del modelo 3D
+
+El `.blend` original no sirve tal cual para la web: tiene ~2.000 objetos, materiales procedurales de Cycles, luces, cámaras e imágenes de referencia empaquetadas. Por eso hay un **pipeline previo**, de modo que el navegador solo descarga lo necesario.
+
+### Pipeline (`npm run model:build`)
+
+1. **Limpieza** (`export_web.py`): descarta referencias, luces, cámaras, recorrido y guías. Aplana la jerarquía conservando posiciones y aplica biseles y espesores. Trabaja en memoria y nunca guarda el `.blend`.
+2. **Materiales para tiempo real**: quita los nodos de ruido procedurales (el navegador no los puede evaluar) y deja el color base. Los vidrios pasan a translucidez simple: la transmisión física es cara en WebGL.
+3. **Unión por zona + material**: de **~2.000 objetos a 44 mallas**, es decir 44 *draw calls* en lugar de miles. Es la optimización que más impacta.
+4. **Metadatos en el GLB**: el nombre de cada malla indica si colisiona, y hay *empties* con puntos clave:
+
+   | Prefijo | Uso |
+   |---|---|
+   | `COL__<zona>__<material>` | Malla visible que participa de las colisiones |
+   | `VIS__<zona>__<material>` | Solo visual (plantas, tablas del piso, cabina del ascensor) |
+   | `ANCLA__inicio`, `ANCLA__acceso`, `ANCLA__bus`, `ANCLA__ascensor` | Inicio, mirada inicial, bus y paradas del ascensor |
+   | `ZONA__hall`, `ZONA__ascensor`, `ZONA__palier`, `ZONA__depto` | Cajas de zona (la escala es el medio tamaño) |
+   | `LUZ__*` | Posición, tipo y energía de las luces de Blender, para recrearlas en la web |
+
+5. **Compresión** (gltf-transform): `dedup` + `weld` + **meshopt**, con cuantización de vértices. Resultado: **1,8 MB → 506 KB** y 44.656 triángulos.
+6. **Nombre con hash** (`torre-natalini.<hash>.glb`) y caché `immutable` de un año (`next.config.ts`). El manifiesto `modelos.generated.json` indica a la app qué archivo usar.
+
+### En el navegador
+
+- **Code splitting**: el mapa no incluye Three.js. El recorrido se importa con `next/dynamic` solo al entrar.
+- **Precarga anticipada**: al pasar el mouse por un marcador con 3D se precargan la ruta, el código de Three.js y el GLB. Al hacer clic, casi todo ya está en caché.
+- **Progreso real**: la cortina de transición muestra el avance de descarga (`useProgress`).
+- **Shaders compilados antes de mostrar**: con la cortina todavía cerrada, `renderer.compileAsync` compila todos los materiales en segundo plano (`KHR_parallel_shader_compile`). Mientras tanto el canvas no dibuja (`frameloop="never"`): dibujar antes obligaría a esperar la compilación. En Windows (Direct3D) compilar shaders es lento, y sin esto la carga se congelaba varios segundos.
+- **Pocas luces**: las 9 luminarias de Blender se agrupan en 3 luces puntuales (hall, zona de día y zona de noche del departamento). Cada luz extra agranda el shader de todos los materiales.
+- **Sin mapa de entorno (PMREM)**: generarlo compila shaders pesados de forma sincrónica (~2 s en una Radeon Vega 11). La luz ambiente se resuelve con luz hemisférica + ambiental, y se modera la metalicidad de los materiales.
+- **Sombras estáticas**: el mapa de sombras se calcula al cargar y solo se recalcula mientras se mueve el ascensor (`shadowMap.autoUpdate = false`).
+- **DPR acotado** a 1,75 para no sobrecargar pantallas de alta densidad.
+
+## 4. Transición 2D ↔ 3D
+
+La cortina vive en el `layout` raíz, así que **sobrevive al cambio de ruta**:
+
+1. **Clic en el marcador:** el mapa vuela hasta el desarrollo y la cortina se expande en círculo desde ese punto (`clip-path`).
+2. **Cortina cerrada:** se navega a `/recorrido/<slug>`. La cortina muestra "Entrando a Torre Natalini" y el progreso de carga.
+3. **Modelo listo:** cuando el modelo y el colisionador están armados, la cortina se desvanece y aparece la pantalla de inicio.
+4. **Vuelta:** el MARQ Bus (o "Volver al mapa" en la pausa) hace el mismo recorrido a la inversa. El mapa abre la cortina al montarse.
+
+Si alguien entra directo por URL, la cortina se cierra al instante y funciona como pantalla de carga.
+
+## 5. Primera persona y colisiones
+
+- **Controles**: *pointer lock* para mirar con el mouse. WASD o flechas para caminar, Shift para correr, E o clic para interactuar, Esc para pausar.
+- **Cuerpo**: una **cápsula** de 0,22 m de radio con los ojos a 1,65 m. El radio permite pasar por las puertas de 0,5 m que tiene el modelo.
+- **Colisión** (`collision.ts`): al cargar, las mallas `COL__*` se unen en una sola geometría en coordenadas de mundo y se construye un **BVH**. En cada paso, `shapecast` busca los triángulos cercanos y empuja la cápsula fuera de ellos. Se hacen 5 subpasos por cuadro para no atravesar paredes finas como los vidrios.
+- **Gravedad y escalones**: la cápsula cae y se apoya. Sube escalones menores a su radio, como el cordón de la vereda (11 cm) o el desnivel del terreno (15 cm).
+- **Bordes**: paredes invisibles alrededor de la calle, la vereda y el terreno. Además, si el visitante cae más de 4 m, vuelve al último lugar donde estaba apoyado.
+- **Ascensor**: la cabina es una **plataforma móvil**. El piso de la cabina solo existe donde está la cabina, y no se puede entrar al hueco si la cabina está en otro piso. Al apretar E, cabina y visitante viajan juntos en 4,5 s con aceleración suave.
+- **Zonas**: la posición se compara con las cajas `ZONA__*` para mostrar dónde está el visitante (vereda, hall, ascensor, palier, departamento) y un texto breve.
+
+## 6. MARQ Bus
+
+Modelado en código (`MarqBus.tsx`) con la identidad de MARQ: cuerpo blanco, franja roja, rótulo "MARQ Bus" y cartel "MAPA MARQ". Está estacionado junto al cordón, donde marca `ANCLA__bus`, y tiene su propio volumen de colisión. Al acercarse a la puerta, su marco se ilumina y aparece **E · Subir al MARQ Bus · volver al mapa**.
+
+Para otros edificios, alcanza con exportar su `ANCLA__bus`: el bus se ubica solo.
+
+## 7. Agregar un nuevo desarrollo 3D
+
+1. Modelar en Blender siguiendo las convenciones: zonas y colecciones como en la Torre Natalini, más `PARAMETROS` si hay ascensor.
+2. Sumarlo a `MODELS` en `scripts/build-model.mjs` y correr `npm run model:build`.
+3. Agregar `recorrido3d: { slug, modelo }` al desarrollo en `src/content/desarrollos.ts` y sus textos por zona en `src/content/recorridos.ts`.
+
+La ruta `/recorrido/<slug>` se genera sola (`generateStaticParams`).
+
+## 8. Verificación
+
+**Rendimiento** medido en una AMD Radeon RX Vega 11 (gráfica integrada, Direct3D 11), en modo desarrollo:
+
+| | Antes | Después |
+|---|---|---|
+| Hasta la pantalla de inicio | 10,5 s | 2,7 s |
+| Bloqueo más largo de la página | 2,9 s (6,8 s en total) | 0,25 s |
+| Recorrido (exterior, giro 360°, hall, departamento) | 60 fps | 60 fps |
+
+
+Probado en Chrome (sin interfaz, vía DevTools Protocol) sobre el build de producción:
+
+- **Mapa:** filtros, ficha de un desarrollo sin 3D, y clic en Torre Natalini → cortina → ruta 3D → pantalla de inicio.
+- **Recorrido:**
+  - Caminar 4,8 m en 2 s.
+  - Frenar contra un sofá del hall.
+  - Pararse sobre la cabina del ascensor y subir 30 m hasta el departamento.
+  - Salir al palier y recorrer el estar.
+  - Ver la indicación del bus, subir y volver al mapa.
+- **Celular:** el mapa se adapta y el 3D muestra un aviso.
+
+El bloqueo del mouse no se puede probar sin interfaz: en ese caso se usa `?debug`, que expone `window.marq`.
+
+## 9. Limitaciones y próximos pasos
+
+- **Modelo interpretativo**: medidas, piso y núcleo son provisionales (ver `modelos/Torre_Natalini/GUIA_MODELO.md`). Con los planos de MARQ se regenera y se vuelve a correr el pipeline.
+- **Celular**: hoy el 3D es solo para escritorio. El paso siguiente es un joystick virtual más arrastre para mirar.
+- **Escala a más edificios**: dividir cada GLB en exterior e interior y cargar el interior al acercarse al acceso. También se puede serializar el BVH en el build, en lugar de construirlo en el navegador.
+- **Materiales**: hornear iluminación y texturas PBR (madera, piedra) en Blender para un aspecto más realista sin costo en tiempo real.
+- **Contenido**: si MARQ necesita editar textos sin desarrolladores, migrar `src/content` a un CMS headless. La estructura de datos ya está separada.

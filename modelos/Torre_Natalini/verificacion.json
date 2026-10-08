@@ -1,0 +1,26 @@
+{
+  "blender": "4.5.3 LTS",
+  "objetos_malla": 2047,
+  "mallas_unicas": 747,
+  "caras_base_unicas": 11171,
+  "superficie_trazada_m2": 68.91,
+  "superficie_publicada_m2": 97,
+  "altura_depto_provisional_m": 29.900000000000002,
+  "fotogramas": 1100,
+  "fps": 24,
+  "parametros": {
+    "altura_pb": 4.8,
+    "altura_podio": 3.2,
+    "niveles_podio": 3,
+    "altura_tipo": 3.1,
+    "niveles_torre": 28,
+    "nivel_depto": 5,
+    "altura_interior": 2.75,
+    "offset_depto": [
+      -7.5,
+      0
+    ],
+    "escala_plano_px_m": 40.7,
+    "ojo": 1.65
+  }
+}

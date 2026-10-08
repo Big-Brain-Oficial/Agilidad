@@ -1,0 +1,507 @@
+.hub {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 400px;
+  height: 100dvh;
+  background: #eeece6;
+}
+
+/* ---- Mapa ------------------------------------------------------------------ */
+
+.mapArea {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #eeece6;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.svg:active {
+  cursor: grabbing;
+}
+
+.hint {
+  position: absolute;
+  left: 20px;
+  top: 18px;
+  margin: 0;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  font: 500 12px/1 var(--font-text);
+  color: var(--ink-soft);
+  pointer-events: none;
+}
+
+/* Marcadores HTML sobre el SVG: botones accesibles con tamaño fijo en pantalla. */
+.markers {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  pointer-events: none;
+}
+
+.markerItem {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform;
+}
+.markerItem[hidden] {
+  display: none;
+}
+
+.marker {
+  position: relative;
+  display: block;
+  width: 0;
+  height: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.pin {
+  position: absolute;
+  left: -18px;
+  top: -18px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--ink);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(29, 29, 31, 0.28);
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+.marker[data-tipo='edificio'] .pin {
+  border-radius: 10px;
+}
+.marker[data-tipo='barrio'] .pin {
+  background: #4f6b45;
+}
+.marker[data-tipo='casas'] .pin {
+  background: #8a6a45;
+}
+.marker[data-estado='futuro'] .pin {
+  border: 2px dashed var(--accent);
+  background: #fff;
+  color: var(--accent);
+}
+.marker[data-3d] .pin {
+  background: var(--accent);
+}
+.marker[data-3d] .pin::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border: 2px solid var(--accent);
+  border-radius: 14px;
+  animation: pulse 1.8s ease-out infinite;
+}
+.marker[data-active] .pin,
+.marker:focus-visible .pin {
+  transform: scale(1.15);
+}
+
+@keyframes pulse {
+  from {
+    opacity: 0.8;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+.badge3d {
+  position: absolute;
+  left: 10px;
+  top: -30px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  background: var(--ink);
+  color: #fff;
+  font: 800 10px/1 var(--font-display);
+  letter-spacing: 0.06em;
+}
+
+.markerLabel {
+  position: absolute;
+  left: 26px;
+  top: -13px;
+  display: grid;
+  gap: 2px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  font: 700 12px/1.15 var(--font-display);
+  color: var(--ink);
+  text-align: left;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.markerLabel em {
+  display: none;
+  font: 500 11px/1.2 var(--font-text);
+  font-style: normal;
+  color: var(--accent);
+}
+.marker[data-active] .markerLabel em,
+.marker:focus-visible .markerLabel em {
+  display: block;
+}
+.marker[data-active] .markerLabel {
+  z-index: 2;
+}
+.markers[data-compact] .marker:not([data-active]):not(:focus-visible) .markerLabel {
+  display: none;
+}
+
+.zoom {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  display: grid;
+  gap: 6px;
+}
+.zoom button {
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  font: 600 18px/1 var(--font-text);
+  cursor: pointer;
+}
+.zoom .zoomReset {
+  font-size: 16px;
+}
+
+.legend {
+  position: absolute;
+  left: 18px;
+  bottom: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  max-width: calc(100% - 100px);
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  font: 500 12px/1 var(--font-text);
+  color: var(--ink-soft);
+}
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.legend i {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+.legend i[data-tipo='edificio'] {
+  border-radius: 3px;
+}
+.legend i[data-tipo='barrio'] {
+  background: #4f6b45;
+}
+.legend i[data-tipo='casas'] {
+  background: #8a6a45;
+}
+.legend i[data-estado='futuro'] {
+  border: 2px dashed var(--accent);
+  background: #fff;
+}
+.legend b {
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: var(--accent);
+  color: #fff;
+  font: 800 9px/1.2 var(--font-display);
+}
+
+/* ---- Panel ------------------------------------------------------------------- */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow-y: auto;
+  border-left: 1px solid var(--line);
+  background: var(--paper);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 26px 28px 22px;
+  border-bottom: 1px solid var(--line);
+}
+.brandMark {
+  font: 800 26px/1 var(--font-display);
+  letter-spacing: 0.18em;
+}
+.brandSub {
+  display: grid;
+  gap: 3px;
+  padding-left: 14px;
+  border-left: 1px solid #d6d3cc;
+  font: 500 12px/1.2 var(--font-display);
+  color: var(--ink-soft);
+}
+.brandSub strong {
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: 0.04em;
+}
+
+.list,
+.detail {
+  padding: 22px 28px 32px;
+}
+
+.intro {
+  margin: 0 0 18px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #45413b;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+.filters button {
+  height: 32px;
+  padding: 0 13px;
+  border: 1px solid #d6d3cc;
+  border-radius: 999px;
+  background: #fff;
+  font: 600 12px/1 var(--font-display);
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.filters button[aria-pressed='true'] {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: #fff;
+}
+
+.items {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.item:hover,
+.item[data-active] {
+  border-color: #d6d3cc;
+  transform: translateX(2px);
+}
+
+.itemIcon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--ink);
+  color: #fff;
+}
+.itemIcon[data-tipo='barrio'] {
+  background: #4f6b45;
+}
+.itemIcon[data-tipo='casas'] {
+  background: #8a6a45;
+}
+.itemIcon[data-estado='futuro'] {
+  border: 2px dashed var(--accent);
+  background: #fff;
+  color: var(--accent);
+}
+
+.itemText {
+  display: grid;
+  flex: 1;
+  gap: 3px;
+  min-width: 0;
+}
+.itemText strong {
+  font: 700 14px/1.2 var(--font-display);
+}
+.itemText span {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.itemBadge {
+  padding: 4px 7px;
+  border-radius: 6px;
+  background: var(--accent);
+  color: #fff;
+  font: 800 10px/1 var(--font-display);
+}
+
+.back {
+  margin: 0 0 18px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: 600 13px/1 var(--font-display);
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: #fff;
+  font: 600 12px/1 var(--font-display);
+  color: var(--ink-soft);
+}
+.chip[data-estado='futuro'] {
+  background: #fbe9ea;
+  color: var(--accent);
+}
+
+.detailTitle {
+  margin: 14px 0 4px;
+  font: 800 30px/1.1 var(--font-display);
+  letter-spacing: -0.01em;
+}
+.detailPlace {
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.detailText {
+  margin: 0 0 16px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #3d3a35;
+}
+
+.facts {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 24px;
+  padding: 0;
+  list-style: none;
+}
+.facts li {
+  padding-left: 16px;
+  position: relative;
+  font-size: 14px;
+  color: #45413b;
+}
+.facts li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 7px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.actions {
+  display: grid;
+  gap: 14px;
+  justify-items: start;
+}
+.link {
+  font: 600 13px/1 var(--font-text);
+  color: var(--accent);
+  text-decoration: none;
+}
+.link:hover {
+  text-decoration: underline;
+}
+
+/* ---- Responsive ------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .hub {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(55dvh, 1fr) auto;
+    height: auto;
+    min-height: 100dvh;
+  }
+  .mapArea {
+    min-height: 55dvh;
+  }
+  .panel {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    overflow: visible;
+  }
+  .brand {
+    padding: 18px 20px;
+  }
+  .list,
+  .detail {
+    padding: 18px 20px 28px;
+  }
+  .legend {
+    display: none;
+  }
+  .hint {
+    left: 12px;
+    top: 12px;
+  }
+}
