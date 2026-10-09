@@ -37,7 +37,7 @@ src/
     layout.tsx                   tipografías y cortina de transición
   content/
     desarrollos.ts               desarrollos del mapa (textos, posición, recorrido 3D)
-    recorridos.ts                textos por zona del recorrido
+    recorridos.ts                textos por zona y objetos con información (tecla I)
     modelos.generated.json       URL del GLB vigente (lo escribe build-model)
   components/
     map/                         mapa MapLibre, marcadores y panel (SVG anterior sin uso)
@@ -98,7 +98,7 @@ Si alguien entra directo por URL, la cortina se cierra al instante y funciona co
 
 ## 5. Primera persona y colisiones
 
-- **Controles**: *pointer lock* para mirar con el mouse. WASD o flechas para caminar, Shift para correr, E o clic para interactuar, Esc para pausar.
+- **Controles**: *pointer lock* para mirar con el mouse. WASD o flechas para caminar, Shift para correr, E o clic para interactuar, I para ver información del objeto que se mira, Esc para pausar.
 - **Cuerpo**: una **cápsula** de 0,22 m de radio con los ojos a 1,65 m. El radio permite pasar por las puertas de 0,5 m que tiene el modelo.
 - **Colisión** (`collision.ts`): al cargar, las mallas `COL__*` se unen en una sola geometría en coordenadas de mundo y se construye un **BVH**. En cada paso, `shapecast` busca los triángulos cercanos y empuja la cápsula fuera de ellos. Se hacen 5 subpasos por cuadro para no atravesar paredes finas como los vidrios.
 - **Gravedad y escalones**: la cápsula cae y se apoya. Sube escalones menores a su radio, como el cordón de la vereda (11 cm) o el desnivel del terreno (15 cm).
@@ -106,6 +106,7 @@ Si alguien entra directo por URL, la cortina se cierra al instante y funciona co
 - **Ascensor**: la cabina es una **plataforma móvil**. El piso de la cabina solo existe donde está la cabina, y no se puede entrar al hueco si la cabina está en otro piso. Al apretar E se cierran las puertas, cabina y visitante viajan juntos en 4,5 s con aceleración suave y las puertas vuelven a abrir. Las puertas y el frente de la cabina se arman en código (`cabinDoors.ts`); el frente tiene su propio BVH, que se mueve con la cabina.
 - **Acceso al edificio**: dos hojas de vidrio corredizas que se abren solas cuando el visitante está a menos de 3 m (`entranceDoor.ts`). Cada hoja tiene su propio BVH, que se mueve con ella. El modelo trae dos hojas fijas abiertas a 90°: se recortan del vidrio del hall al cargar, para no regenerar el GLB.
 - **Zonas**: la posición se compara con las cajas `ZONA__*` para mostrar dónde está el visitante (vereda, hall, ascensor, palier, departamento) y un texto breve.
+- **Información de objetos**: cada objeto con información (`OBJETOS_NATALINI` en `recorridos.ts`) es una esfera en coordenadas de la escena. No depende del GLB, porque las mallas vienen unidas por material. Si la mira cruza la esfera a menos de 3 m y un rayo contra el BVH no encuentra una pared en el medio, aparece el aviso «I». Con I se abre una tarjeta que no pausa. Se cierra con I de nuevo o al alejarse más de 4,5 m.
 
 ## 6. MARQ Bus
 

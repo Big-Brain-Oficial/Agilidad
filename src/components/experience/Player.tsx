@@ -5,14 +5,15 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import type { MeshBVH } from 'three-mesh-bvh';
-import type { ZonaId } from '@/content/recorridos';
+import { OBJETOS_NATALINI, type ZonaId } from '@/content/recorridos';
 import { CABIN_FLOOR } from './cabinDoors';
 import { resolveCapsule } from './collision';
 import { useExperience } from './store';
 import type { WorldData } from './prepareWorld';
 
 // Control en primera persona: mouse para mirar (pointer lock), WASD/flechas para caminar,
-// Shift para correr y E (o clic) para interactuar. La cámara está a la altura de los ojos y
+// Shift para correr, E (o clic) para interactuar e I para ver la información del objeto que se
+// mira. La cámara está a la altura de los ojos y
 // el cuerpo es una cápsula que colisiona contra el BVH del modelo.
 
 const EYE = 1.65;
@@ -25,6 +26,10 @@ const GRAVITY = -24;
 const SUBSTEPS = 5;
 const RIDE_SECONDS = 4.5;
 const DOOR_SECONDS = 1.1;
+const INFO_NEAR = 3; // distancia (desde los ojos) a la que se ofrece la información de un objeto
+const INFO_FAR = 4.5; // más lejos, la tarjeta abierta se cierra sola
+
+const OBJETOS = OBJETOS_NATALINI.map((o) => ({ id: o.id, center: new THREE.Vector3(...o.centro), radius: o.radio }));
 
 const KEYS = {
   forward: ['KeyW', 'ArrowUp'],
@@ -89,6 +94,7 @@ export function Player({ world, debug }: { world: WorldData; debug: boolean }) {
     const down = (e: KeyboardEvent) => {
       pressed.current.add(e.code);
       if (e.code === 'KeyE' && useExperience.getState().phase === 'playing') current.current?.action();
+      if (e.code === 'KeyI' && !e.repeat && useExperience.getState().phase === 'playing') useExperience.getState().toggleInfo();
       if (e.code.startsWith('Arrow') || e.code === 'Space') e.preventDefault();
     };
     const up = (e: KeyboardEvent) => pressed.current.delete(e.code);
@@ -139,6 +145,7 @@ export function Player({ world, debug }: { world: WorldData; debug: boolean }) {
         return new Promise((r) => setTimeout(() => r(pressed.current.delete(code)), ms));
       },
       interact: () => current.current?.action(),
+      info: () => useExperience.getState().toggleInfo(),
     };
     (window as unknown as { marq: typeof api }).marq = api;
     return () => { delete (window as unknown as { marq?: typeof api }).marq; };
@@ -152,6 +159,8 @@ export function Player({ world, debug }: { world: WorldData; debug: boolean }) {
   const delta = useRef(new THREE.Vector3()).current;
   const movingDelta = useRef(new THREE.Vector3()).current;
   const up = useRef(new THREE.Vector3(0, 1, 0)).current;
+  const ray = useRef(new THREE.Ray()).current;
+  const toObject = useRef(new THREE.Vector3()).current;
 
   const inShaft = (p: THREE.Vector3) => p.x > world.shaft.min.x && p.x < world.shaft.max.x && p.z > world.shaft.min.z && p.z < world.shaft.max.z;
   const cabinFloor = () => world.cabin.position.y + CABIN_FLOOR;
@@ -282,6 +291,26 @@ export function Player({ world, debug }: { world: WorldData; debug: boolean }) {
     }
     current.current = next;
     ui.setPrompt(next?.label ?? null);
+
+    // Objeto con información: el más cercano que cruza la mira, a mano y sin una pared en el medio.
+    let seen: string | null = null;
+    if (!st.ride && ui.phase === 'playing') {
+      camera.getWorldDirection(ray.direction);
+      ray.origin.copy(camera.position);
+      let best = INFO_NEAR;
+      for (const o of OBJETOS) {
+        toObject.subVectors(o.center, ray.origin);
+        const distance = toObject.length();
+        const along = toObject.dot(ray.direction);
+        if (distance > best || along <= 0 || distance * distance - along * along > o.radius * o.radius) continue;
+        if (world.collider.raycastFirst(ray, THREE.DoubleSide, 0, Math.max(0, along - o.radius))) continue;
+        seen = o.id;
+        best = distance;
+      }
+    }
+    ui.setInfo(seen);
+    const open = OBJETOS.find((o) => o.id === ui.infoOpen);
+    if (open && (st.ride || open.center.distanceTo(camera.position) > INFO_FAR)) ui.closeInfo();
 
     // Zona actual (cada pocos cuadros).
     if (st.frame++ % 8 === 0) {
