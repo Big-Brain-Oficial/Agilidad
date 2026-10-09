@@ -4,6 +4,7 @@ import { PointerLockControls } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
+import type { MeshBVH } from 'three-mesh-bvh';
 import type { ZonaId } from '@/content/recorridos';
 import { CABIN_FLOOR } from './cabinDoors';
 import { resolveCapsule } from './collision';
@@ -149,7 +150,7 @@ export function Player({ world, debug }: { world: WorldData; debug: boolean }) {
   const start = useRef(new THREE.Vector3()).current;
   const end = useRef(new THREE.Vector3()).current;
   const delta = useRef(new THREE.Vector3()).current;
-  const cabinDelta = useRef(new THREE.Vector3()).current;
+  const movingDelta = useRef(new THREE.Vector3()).current;
   const up = useRef(new THREE.Vector3(0, 1, 0)).current;
 
   const inShaft = (p: THREE.Vector3) => p.x > world.shaft.min.x && p.x < world.shaft.max.x && p.z > world.shaft.min.z && p.z < world.shaft.max.z;
@@ -196,6 +197,7 @@ export function Player({ world, debug }: { world: WorldData; debug: boolean }) {
       if (moving) move.normalize().multiplyScalar(has(KEYS.run) ? RUN : WALK);
 
       st.prev.copy(st.pos);
+      world.entrance?.update(st.pos, dt);
       const h = dt / SUBSTEPS;
       for (let i = 0; i < SUBSTEPS; i++) {
         st.vel.y = st.onGround ? GRAVITY * h : st.vel.y + GRAVITY * h;
@@ -205,11 +207,20 @@ export function Player({ world, debug }: { world: WorldData; debug: boolean }) {
         start.set(st.pos.x, st.pos.y + SEG_TOP, st.pos.z);
         end.set(st.pos.x, st.pos.y + SEG_BOTTOM, st.pos.z);
         resolveCapsule(world.collider, start, end, RADIUS, delta);
-        // Frente de la cabina: viaja con ella, así que se prueba en sus coordenadas.
-        const cabinY = world.cabin.position.y;
-        start.add(delta).y -= cabinY;
-        end.add(delta).y -= cabinY;
-        delta.add(resolveCapsule(world.doors.collider, start, end, RADIUS, cabinDelta));
+        // Frente de la cabina y hojas de la puerta de acceso: se mueven, así que cada una tiene su
+        // propio BVH y se prueba en sus coordenadas.
+        start.add(delta);
+        end.add(delta);
+        const local = (bvh: MeshBVH, origin: THREE.Vector3) => {
+          start.sub(origin);
+          end.sub(origin);
+          resolveCapsule(bvh, start, end, RADIUS, movingDelta);
+          start.add(origin).add(movingDelta);
+          end.add(origin).add(movingDelta);
+          delta.add(movingDelta);
+        };
+        local(world.doors.collider, world.cabin.position);
+        for (const leaf of world.entrance?.leaves ?? []) local(leaf.collider, leaf.mesh.position);
 
         st.onGround = delta.y > Math.abs(h * st.vel.y * 0.25);
         const offset = Math.max(0, delta.length() - 1e-5);
