@@ -8,7 +8,7 @@ La arquitectura y las decisiones técnicas están en [ARQUITECTURA.md](ARQUITECT
 
 ## Qué incluye
 
-- **Mapa geográfico** (`/`): cartografía real de Resistencia con MapLibre, perspectiva de maqueta y Torre Natalini ubicada sobre Formosa y Rivadavia. Los 10 desarrollos tienen maquetas doradas e iluminación para destacar sobre el contexto plano. Funciona en computadora y en celular.
+- **Mapa geográfico** (`/`): cartografía real de Resistencia con MapLibre, perspectiva de maqueta y Torre Natalini ubicada sobre Formosa y Rivadavia. Los 10 desarrollos tienen maquetas doradas e iluminación para destacar sobre el contexto plano; al alejarse crecen para seguir viéndose. Abre en una **vista general** con los desarrollos de Resistencia, y el botón del panel derecho vuelve a ella. Funciona en computadora y en celular.
 - **Recorrido 3D** (`/recorrido/torre-natalini`): primera persona con colisiones, ascensor entre el hall y el departamento, y textos por zona. Por ahora solo en computadora con teclado y mouse; en el celular se muestra un aviso.
 - **Transición** entre ambos con una cortina que muestra el progreso de carga del modelo.
 

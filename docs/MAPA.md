@@ -4,12 +4,15 @@ La pantalla `/` utiliza MapLibre GL JS 6.13 y cartografía vectorial de OpenFree
 
 ## Representación
 
-- Cámara inclinada 42°, neutros cálidos, agua azul suave y parques verdes.
+- Cámara inclinada 42° con perspectiva cerrada (campo de visión de 24° en lugar de los 36,9° de MapLibre): las torres altas no se tuercen hacia los bordes y la ciudad se lee como una maqueta. Neutros cálidos, agua azul suave y parques verdes.
 - Edificios de contexto planos y discretos para dar protagonismo a MARQ.
 - Los diez desarrollos tienen una maqueta cartográfica simplificada, de escala visual aumentada y halo cálido sobre el suelo. Las torres se distinguen por altura y bandas claras; barrios y casas, por conjuntos bajos. Las dimensiones, altura, orientación y retranqueos son orientativos, no medidas de obra. Natalini conserva la huella de su esquina como referencia.
+- **Escala según el zoom** (`escalaMaqueta`): al alejarse, las maquetas crecen para seguir leyéndose sobre la ciudad; desde el zoom 17 quedan con su tamaño de referencia. La altura de las torres crece más que la planta, y la planta tiene tope para que UNO Boulevard y NBCH (a ~290 m) no se toquen. El GeoJSON se regenera por pasos de 0,05 de zoom.
+- **Vista general**: el mapa abre encuadrando todos los desarrollos menos Pueblo Mío (Puerto Tirol, a ~12 km: sumarlo amontona las torres del centro; se llega desde la lista). El encuadre se calcula con la inclinación y la altura de las torres (`encuadre.ts` reproduce la proyección de MapLibre) y se recalcula si cambia el tamaño de la ventana. El botón **Vista general** del panel derecho vuelve a ese encuadre; también «← Todos los desarrollos» en la ficha y Esc.
+- **Tarjetas**: de lejos muestran sólo el nombre. Cada una se ubica debajo de su maqueta, a un lado, más abajo con tallo largo o sobre la punta de la torre, evitando tapar otras tarjetas, otras torres y el título. Las de maquetas fuera de pantalla se ocultan.
 - El marcador y el volumen permiten abrir la ficha. La decisión de entrar al recorrido inmersivo sigue en el botón de la ficha.
 - Sólo se sitúan desarrollos con `ubicacion`. El catálogo mantiene el resto, indicando que su ubicación está pendiente.
-- Los controles adicionales de zoom, vista superior y región quedan fuera de esta iteración. El arrastre y la rueda/pellizco son interacciones nativas del mapa.
+- El arrastre y la rueda/pellizco son interacciones nativas del mapa. En celular se oculta la ayuda de arrastre para dejar lugar a las tarjetas.
 
 El mapa no importa Three.js ni el GLB de Natalini. La representación usa polígonos GeoJSON y extrusiones de MapLibre. No se modificó el código del recorrido inmersivo.
 
@@ -17,10 +20,11 @@ El mapa no importa Three.js ni el GLB de Natalini. La representación usa políg
 
 | Archivo | Uso |
 |---|---|
-| `src/components/map/MapCanvas.tsx` | Ciclo de vida de MapLibre, selección, foco, carga y recuperación de errores |
+| `src/components/map/MapCanvas.tsx` | Ciclo de vida de MapLibre, vista general, selección, foco, tarjetas, carga y recuperación de errores |
+| `src/components/map/encuadre.ts` | Proyección de la cámara (Mercator con perspectiva) para calcular encuadres sin mover el mapa |
 | `public/maps/resistencia.json` | Estilo derivado de OpenFreeMap Positron; fuentes, colores y rótulos |
 | `src/content/desarrollos.ts` | Ubicación geográfica y catálogo |
-| `src/content/mapa-resistencia.ts` | Volúmenes esquemáticos y puntos de luz de todos los desarrollos |
+| `src/content/mapa-resistencia.ts` | Volúmenes esquemáticos, escala según el zoom, puntos de luz y desarrollos fuera de la vista general |
 
 MapLibre se importa en el cliente. Next publica su worker como un recurso local con hash, usando el patrón oficial para Turbopack. El estilo se sirve desde el proyecto; las teselas, fuentes y sprites cartográficos provienen de OpenFreeMap. La atribución se conserva en pantalla. No hace falta una clave ni un servidor GIS propio.
 

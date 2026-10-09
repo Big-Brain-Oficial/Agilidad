@@ -34,6 +34,16 @@ export function TipoIcon({ tipo }: { tipo: TipoDesarrollo }) {
   return <BuildingIcon />;
 }
 
+/** Esquinas de encuadre con la ciudad adentro: vista general del mapa. */
+export function OverviewIcon() {
+  return (
+    <svg {...common} aria-hidden="true">
+      <path d="M2.5 5.5v-3h3M10.5 2.5h3v3M13.5 10.5v3h-3M5.5 13.5h-3v-3" />
+      <path d="M6 10.5V7l2-1.5L10 7v3.5" />
+    </svg>
+  );
+}
+
 export function ArrowIcon() {
   return (
     <svg {...common} aria-hidden="true">
