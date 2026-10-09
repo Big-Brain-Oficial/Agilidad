@@ -3,6 +3,7 @@ import type { MeshBVH } from 'three-mesh-bvh';
 import type { ZonaId } from '@/content/recorridos';
 import { buildCabinDoors, type CabinDoors } from './cabinDoors';
 import { buildCollider, wallGeometry } from './collision';
+import { buildEntranceDoor, removeOpenLeaves, type EntranceDoor } from './entranceDoor';
 
 // Convierte el GLB exportado por scripts/blender/export_web.py en los datos que usa la experiencia.
 // Convenciones de nombres del GLB:
@@ -30,6 +31,7 @@ export interface WorldData {
   busDoor: THREE.Vector3;
   cabin: THREE.Group;
   doors: CabinDoors;
+  entrance: EntranceDoor | null;
   /** Alturas del piso de cada parada del ascensor (0 = hall). */
   levels: number[];
   pisoDepto: number;
@@ -115,6 +117,15 @@ export function prepareWorld(scene: THREE.Object3D): WorldData {
   const steel = cabinMeshes.find((m) => !m.name.includes('LED'))!.material;
   const doors = buildCabinDoors(cabin, cabinBounds, Array.isArray(steel) ? steel[0] : steel);
 
+  // Puerta automática del acceso: reemplaza las hojas fijas abiertas del modelo.
+  const hallGlass = scene.getObjectByName('COL__hall__Vidrio_claro');
+  const hallAluminum = scene.getObjectByName('COL__hall__AV_Aluminio');
+  let entrance: EntranceDoor | null = null;
+  if (hallGlass instanceof THREE.Mesh && hallAluminum instanceof THREE.Mesh) {
+    removeOpenLeaves(hallGlass);
+    entrance = buildEntranceDoor(scene, hallGlass.material as THREE.Material, hallAluminum.material as THREE.Material);
+  }
+
   const bus = worldPos(named('ANCLA__bus'));
   const busDoor = bus.clone().add(BUS_DOOR);
 
@@ -166,6 +177,7 @@ export function prepareWorld(scene: THREE.Object3D): WorldData {
     busDoor,
     cabin,
     doors,
+    entrance,
     levels,
     pisoDepto: elevatorData.piso_depto ?? 0,
     shaft: zones.find((z) => z.id === 'ascensor')?.box ?? new THREE.Box3(),

@@ -103,6 +103,7 @@ Si alguien entra directo por URL, la cortina se cierra al instante y funciona co
 - **Gravedad y escalones**: la cápsula cae y se apoya. Sube escalones menores a su radio, como el cordón de la vereda (11 cm) o el desnivel del terreno (15 cm).
 - **Bordes**: paredes invisibles alrededor de la calle, la vereda y el terreno. Además, si el visitante cae más de 4 m, vuelve al último lugar donde estaba apoyado.
 - **Ascensor**: la cabina es una **plataforma móvil**. El piso de la cabina solo existe donde está la cabina, y no se puede entrar al hueco si la cabina está en otro piso. Al apretar E se cierran las puertas, cabina y visitante viajan juntos en 4,5 s con aceleración suave y las puertas vuelven a abrir. Las puertas y el frente de la cabina se arman en código (`cabinDoors.ts`); el frente tiene su propio BVH, que se mueve con la cabina.
+- **Acceso al edificio**: dos hojas de vidrio corredizas que se abren solas cuando el visitante está a menos de 3 m (`entranceDoor.ts`). Cada hoja tiene su propio BVH, que se mueve con ella. El modelo trae dos hojas fijas abiertas a 90°: se recortan del vidrio del hall al cargar, para no regenerar el GLB.
 - **Zonas**: la posición se compara con las cajas `ZONA__*` para mostrar dónde está el visitante (vereda, hall, ascensor, palier, departamento) y un texto breve.
 
 ## 6. MARQ Bus
