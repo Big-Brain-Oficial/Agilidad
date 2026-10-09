@@ -54,6 +54,7 @@ export function DevelopmentPanel({ desarrollos, visibles, filtro, onFiltro, sele
           </div>
           <h2 className={styles.detailTitle}>{selected.nombre}</h2>
           <p className={styles.detailPlace}>{selected.lugar}</p>
+          {!selected.ubicacion && <p className={styles.locationPending}>Ubicación en el mapa pendiente de confirmar.</p>}
           <p className={styles.detailText}>{selected.resumen}</p>
           {selected.datos && (
             <ul className={styles.facts}>
@@ -80,8 +81,9 @@ export function DevelopmentPanel({ desarrollos, visibles, filtro, onFiltro, sele
       ) : (
         <section className={styles.list}>
           <p className={styles.intro}>
-            Explorá los desarrollos de MARQ en la ciudad. <strong>La Torre Natalini</strong> se puede recorrer en 3D, del hall a un departamento.
+            Explorá Resistencia y descubrí los <strong>desarrollos MARQ</strong>. Seleccioná una maqueta para conocer el proyecto.
           </p>
+          <p className={styles.catalogNote}>Todos los proyectos se destacan en dorado. El recorrido inmersivo está disponible en Torre Natalini.</p>
           <div className={styles.filters} role="group" aria-label="Filtrar desarrollos">
             {FILTROS.map((f) => (
               <button key={f.id} type="button" aria-pressed={filtro === f.id} onClick={() => onFiltro(f.id)}>

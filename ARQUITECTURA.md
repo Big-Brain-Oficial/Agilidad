@@ -1,6 +1,6 @@
 # MARQ Experience: arquitectura técnica
 
-Plataforma inmobiliaria inmersiva para MARQ. Un **mapa 2D** de los desarrollos funciona como pantalla principal; desde ahí se entra a una **exploración 3D en primera persona**. Hoy hay recorrido 3D para la Torre Natalini. El **MARQ Bus** que espera frente al edificio devuelve al mapa.
+Plataforma inmobiliaria inmersiva para MARQ. Un **mapa geográfico en perspectiva** funciona como pantalla principal; desde la ficha de un desarrollo se entra a una **exploración 3D en primera persona**. Hoy hay recorrido 3D para la Torre Natalini. El **MARQ Bus** que espera frente al edificio devuelve al mapa. El mapa actual usa MapLibre y OpenFreeMap; sus datos, estilo y fuentes se describen en [docs/MAPA.md](docs/MAPA.md).
 
 ```
  Mapa 2D (/)                          Recorrido 3D (/recorrido/torre-natalini)
@@ -40,7 +40,7 @@ src/
     recorridos.ts                textos por zona del recorrido
     modelos.generated.json       URL del GLB vigente (lo escribe build-model)
   components/
-    map/                         plano SVG, pan/zoom, marcadores y panel
+    map/                         mapa MapLibre, marcadores y panel (SVG anterior sin uso)
     transition/                  cortina persistente entre rutas
     experience/                  escena 3D, visitante, colisiones, bus, HUD
 ```
@@ -70,7 +70,7 @@ El `.blend` original no sirve tal cual para la web: tiene ~2.000 objetos, materi
 ### En el navegador
 
 - **Code splitting**: el mapa no incluye Three.js. El recorrido se importa con `next/dynamic` solo al entrar.
-- **Precarga anticipada**: al pasar el mouse por un marcador con 3D se precargan la ruta, el código de Three.js y el GLB. Al hacer clic, casi todo ya está en caché.
+- **Carga del recorrido**: al elegir «Recorrer en 3D» en la ficha se precargan la ruta, el código de Three.js y el GLB. Explorar o seleccionar edificios en el mapa no descarga el modelo inmersivo.
 - **Progreso real**: la cortina de transición muestra el avance de descarga (`useProgress`).
 - **Shaders compilados antes de mostrar**: con la cortina todavía cerrada, `renderer.compileAsync` compila todos los materiales en segundo plano (`KHR_parallel_shader_compile`). Mientras tanto el canvas no dibuja (`frameloop="never"`): dibujar antes obligaría a esperar la compilación. En Windows (Direct3D) compilar shaders es lento, y sin esto la carga se congelaba varios segundos.
 - **Pocas luces**: las 9 luminarias de Blender se agrupan en 3 luces puntuales (hall, zona de día y zona de noche del departamento). Cada luz extra agranda el shader de todos los materiales.
@@ -82,7 +82,7 @@ El `.blend` original no sirve tal cual para la web: tiene ~2.000 objetos, materi
 
 La cortina vive en el `layout` raíz, así que **sobrevive al cambio de ruta**:
 
-1. **Clic en el marcador:** el mapa vuela hasta el desarrollo y la cortina se expande en círculo desde ese punto (`clip-path`).
+1. **«Recorrer en 3D» en la ficha:** el mapa vuela hasta el desarrollo y la cortina se expande en círculo desde ese punto (`clip-path`). El clic en el marcador sólo abre la ficha.
 2. **Cortina cerrada:** se navega a `/recorrido/<slug>`. La cortina muestra "Entrando a Torre Natalini" y el progreso de carga.
 3. **Modelo listo:** cuando el modelo y el colisionador están armados, la cortina se desvanece y aparece la pantalla de inicio.
 4. **Vuelta:** el MARQ Bus (o "Volver al mapa" en la pausa) hace el mismo recorrido a la inversa. El mapa abre la cortina al montarse.

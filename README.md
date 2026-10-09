@@ -8,13 +8,15 @@ La arquitectura y las decisiones técnicas están en [ARQUITECTURA.md](ARQUITECT
 
 ## Qué incluye
 
-- **Mapa 2D** (`/`): plano ilustrado con 10 desarrollos, filtros por tipo, ficha de cada uno, zoom y desplazamiento. Funciona en computadora y en celular.
+- **Mapa geográfico** (`/`): cartografía real de Resistencia con MapLibre, perspectiva de maqueta y Torre Natalini ubicada sobre Formosa y Rivadavia. Los 10 desarrollos tienen maquetas doradas e iluminación para destacar sobre el contexto plano. Funciona en computadora y en celular.
 - **Recorrido 3D** (`/recorrido/torre-natalini`): primera persona con colisiones, ascensor entre el hall y el departamento, y textos por zona. Por ahora solo en computadora con teclado y mouse; en el celular se muestra un aviso.
 - **Transición** entre ambos con una cortina que muestra el progreso de carga del modelo.
 
 ## Stack
 
-Next.js 16 (App Router) · React 19 · TypeScript · Three.js + React Three Fiber + drei · three-mesh-bvh · zustand. Modelo 3D generado desde Blender 4.5 LTS y optimizado con gltf-transform + meshoptimizer. Sin base de datos ni variables de entorno.
+Next.js 16 (App Router) · React 19 · TypeScript · MapLibre GL JS · Three.js + React Three Fiber + drei · three-mesh-bvh · zustand. Modelo 3D generado desde Blender 4.5 LTS y optimizado con gltf-transform + meshoptimizer. Sin base de datos ni variables de entorno.
+
+El mapa usa OpenFreeMap / OpenStreetMap, con estilo local y sin clave de API. Requiere conexión para descargar la cartografía. Detalles y fuentes en [docs/MAPA.md](docs/MAPA.md).
 
 ## Correr el proyecto
 
@@ -89,9 +91,10 @@ src/components/experience/   escena 3D, visitante, colisiones, MARQ Bus y HUD
 |---|---|
 | Desarrollos del mapa: textos, estado, posición en el plano, recorrido 3D | `src/content/desarrollos.ts` |
 | Textos de cada zona del recorrido | `src/content/recorridos.ts` |
-| Plano ilustrado: calles, loteos, lagunas, rótulos | `src/components/map/mapGeometry.ts` |
+| Estilo del mapa real: calles, plazas, lagunas, rótulos | `public/maps/resistencia.json` |
+| Maquetas cartográficas MARQ | `src/content/mapa-resistencia.ts` |
 
-Los textos salen de estudiomarq.com.ar y hay que **validarlos con MARQ**. Las posiciones del mapa son de un plano ilustrado, no coordenadas geográficas.
+Los textos salen de estudiomarq.com.ar y hay que **validarlos con MARQ**. El mapa real usa el campo `ubicacion` (longitud y latitud); los diez desarrollos tienen coordenadas contrastadas con los domicilios y mapas publicados por MARQ (ver `docs/MAPA.md`). El campo `mapa` pertenece al SVG anterior y no se convierte en coordenadas geográficas.
 
 ## Modelo 3D
 

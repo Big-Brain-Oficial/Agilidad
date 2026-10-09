@@ -35,7 +35,7 @@
 .hint {
   position: absolute;
   left: 20px;
-  top: 18px;
+  bottom: 42px;
   margin: 0;
   padding: 8px 14px;
   border-radius: 999px;
@@ -44,6 +44,169 @@
   font: 500 12px/1 var(--font-text);
   color: var(--ink-soft);
   pointer-events: none;
+}
+
+.canvas .geographicMap {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.mapHeading {
+  position: absolute;
+  top: 26px;
+  left: 28px;
+  padding: 16px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 14px;
+  background: rgba(248, 245, 237, 0.9);
+  box-shadow: 0 6px 24px rgba(65, 54, 36, 0.06);
+  pointer-events: none;
+}
+.mapHeading > span {
+  font: 700 10px/1 var(--font-display);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #8d7d68;
+}
+.mapHeading h1 {
+  margin: 9px 0 0;
+  font: 700 24px/1.15 var(--font-display);
+  letter-spacing: -0.04em;
+  color: #3c372f;
+}
+
+.geoMarker {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px 9px 10px;
+  transform: translate(-14px, 14px);
+  border: 1px solid #c5a369;
+  border-radius: 10px;
+  background: #fffdf7;
+  box-shadow: 0 5px 20px rgba(126, 92, 37, 0.2), 0 0 24px rgba(246, 213, 141, 0.3);
+  color: var(--ink);
+  cursor: pointer;
+  pointer-events: auto;
+  text-align: left;
+  white-space: nowrap;
+}
+.geoMarker::before {
+  content: '';
+  position: absolute;
+  left: 13px;
+  top: -14px;
+  height: 14px;
+  width: 1px;
+  background: #977b54;
+}
+.geoMarker > i {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px #f4e9de;
+}
+.geoMarker > span {
+  display: grid;
+  gap: 3px;
+  font: 700 12px/1.2 var(--font-display);
+}
+.geoMarker small {
+  font: 700 8px/1 var(--font-display);
+  letter-spacing: 0.13em;
+  color: #9d7750;
+}
+.geoMarker em {
+  margin-top: 3px;
+  font: 600 10px/1.2 var(--font-text);
+  font-style: normal;
+  color: #977135;
+}
+.geoMarker[data-active],
+.geoMarker:hover {
+  border-color: #a17d56;
+  background: #fff7e9;
+}
+.geoMarker[data-shared] { transform: translate(-14px, 98px); }
+.geoMarker[data-shared]::before { top: -98px; height: 98px; }
+.markerItem:has(.geoMarker[data-active]) { z-index: 1; }
+
+.mapLoading,
+.mapError {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 18px 22px;
+  border: 1px solid #e1d4c2;
+  border-radius: 14px;
+  background: #fffdf7;
+  box-shadow: var(--shadow);
+  font-size: 13px;
+}
+.mapLoading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+.mapLoading i {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #e1d4c2;
+  border-top-color: #977b54;
+  border-radius: 50%;
+  animation: mapSpin 1s linear infinite;
+}
+@keyframes mapSpin { to { transform: rotate(360deg); } }
+.mapError {
+  width: min(360px, calc(100% - 32px));
+}
+.mapError p {
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+.mapError button {
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  cursor: pointer;
+}
+.mapNote {
+  position: absolute;
+  left: 22px;
+  bottom: 14px;
+  margin: 0;
+  padding: 3px 6px;
+  border-radius: 4px;
+  background: rgba(248, 245, 237, 0.85);
+  font-size: 10px;
+  color: #81796d;
+  pointer-events: none;
+}
+.catalogNote,
+.locationPending {
+  margin: 0 0 18px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.locationPending {
+  padding: 9px 12px;
+  border-left: 2px solid #c8b699;
+  background: #eae5dc;
+  color: var(--ink-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mapLoading i { animation: none; }
 }
 
 /* Marcadores HTML sobre el SVG: botones accesibles con tamaño fijo en pantalla. */
@@ -502,6 +665,11 @@
   }
   .hint {
     left: 12px;
-    top: 12px;
+    bottom: 42px;
+    font-size: 10px;
+    padding: 7px 10px;
   }
+  .mapHeading { top: 12px; left: 12px; padding: 12px 14px; }
+  .mapHeading h1 { font-size: 19px; }
+  .mapNote { left: 12px; }
 }

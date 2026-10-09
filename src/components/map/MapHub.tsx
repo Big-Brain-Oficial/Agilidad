@@ -30,7 +30,7 @@ export function MapHub() {
   );
   const selected = DESARROLLOS.find((d) => d.id === selectedId) ?? null;
 
-  // Precarga del recorrido 3D (ruta, código de Three.js y modelo) al pasar el mouse.
+  // La precarga se reserva para quien decide entrar al recorrido desde la ficha.
   const prefetch3D = useCallback(
     (d: Desarrollo) => {
       if (!d.recorrido3d || prefetched.has(d.id)) return;
@@ -42,21 +42,14 @@ export function MapHub() {
     [router]
   );
 
-  const hover = useCallback(
-    (id: string | null) => {
-      setHoveredId(id);
-      const d = DESARROLLOS.find((x) => x.id === id);
-      if (d) prefetch3D(d);
-    },
-    [prefetch3D]
-  );
+  const hover = useCallback((id: string | null) => setHoveredId(id), []);
 
   const enter3D = useCallback(
     async (d: Desarrollo) => {
       if (!d.recorrido3d) return;
       prefetch3D(d);
       setSelectedId(d.id);
-      await mapRef.current?.focus(d, 3.2);
+      await mapRef.current?.focus(d, 17.6);
       const origin = mapRef.current?.screenPoint(d) ?? null;
       await navigate(`/recorrido/${d.recorrido3d.slug}`, `Entrando a ${d.nombre}`, origin);
     },
@@ -68,8 +61,8 @@ export function MapHub() {
     if (d) void mapRef.current?.focus(d);
   }, []);
 
-  // Clic en el mapa: los desarrollos con recorrido 3D entran directo; el resto muestra su ficha.
-  const onMarkerClick = useCallback((d: Desarrollo) => (d.recorrido3d ? enter3D(d) : select(d)), [enter3D, select]);
+  // El mapa selecciona el desarrollo. La entrada al recorrido queda en su ficha.
+  const onMarkerClick = select;
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -91,7 +84,7 @@ export function MapHub() {
           onMarkerClick={onMarkerClick}
           onHover={hover}
         />
-        <p className={styles.hint}>Arrastrá para moverte · rueda o pellizco para acercar</p>
+        <p className={styles.hint}>Arrastrá para explorar · rueda o pellizco para acercar</p>
       </section>
       <DevelopmentPanel
         desarrollos={DESARROLLOS}
