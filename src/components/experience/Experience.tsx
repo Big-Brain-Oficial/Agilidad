@@ -52,7 +52,9 @@ export default function Experience({ desarrollo, debug = false }: { desarrollo: 
           frameloop={ready ? 'always' : 'never'}
           dpr={[1, quality === 'alta' ? 1.5 : 1]}
           camera={{ fov: 58, near: 0.06, far: 1500 }}
-          gl={{ antialias: true, powerPreference: 'high-performance' }}
+          // Sin antialiasing propio: lo hace el búfer del postproceso (ArchvizPost). Tener los dos
+          // duplicaba memoria de video y trabajo en cada cuadro.
+          gl={{ antialias: false, powerPreference: 'high-performance' }}
           onCreated={({ gl }) => {
             gl.toneMapping = THREE.ACESFilmicToneMapping;
             gl.toneMappingExposure = 1.05;

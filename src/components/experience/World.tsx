@@ -4,6 +4,7 @@ import { Environment, Sky, useGLTF } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
+import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
 import { MarqBus } from './MarqBus';
 import { Player } from './Player';
 import { Surroundings } from './Surroundings';
@@ -15,6 +16,32 @@ import { ArchvizPost } from './ArchvizPost';
 // Escena del recorrido: modelo de la torre, luces, cielo, entorno, MARQ Bus y visitante.
 
 const INTERIOR_LIGHT = '#ffe6c7';
+
+// Las texturas del GLB vienen en KTX2: el transcodificador (public/basis, copiado de
+// three/examples/jsm/libs/basis) las pasa al formato comprimido que soporte la GPU. Uno solo para
+// toda la sesión: sus workers se reusan al volver a entrar.
+let ktx2Loader: KTX2Loader | null = null;
+function getKtx2Loader(gl: THREE.WebGLRenderer) {
+  ktx2Loader ??= new KTX2Loader().setTranscoderPath('/basis/');
+  return ktx2Loader.detectSupport(gl);
+}
+
+/** Sube todas las texturas a la GPU. Si no, cada una se sube la primera vez que entra en cuadro y la imagen se traba. */
+function uploadTextures(gl: THREE.WebGLRenderer, scene: THREE.Object3D) {
+  const done = new Set<THREE.Texture>();
+  scene.traverse((o) => {
+    const material = (o as THREE.Mesh).material;
+    if (!material) return;
+    for (const m of Array.isArray(material) ? material : [material]) {
+      for (const value of Object.values(m)) {
+        if (value instanceof THREE.Texture && !done.has(value)) {
+          done.add(value);
+          gl.initTexture(value);
+        }
+      }
+    }
+  });
+}
 
 /**
  * Agrupa las luminarias de Blender en pocas luces puntuales. Cada luz agranda los shaders de
@@ -46,8 +73,11 @@ function groupInteriorLights(world: WorldData) {
 }
 
 export function World({ url, debug, onReady }: { url: string; debug: boolean; onReady: () => void }) {
-  const gltf = useGLTF(url); // decodifica meshopt automáticamente
   const gl = useThree((s) => s.gl);
+  // Decodifica meshopt automáticamente; KTX2 con el transcodificador. drei usa el GLTFLoader de
+  // three-stdlib, que acepta el KTX2Loader de three (más nuevo); solo difieren los tipos.
+  const gltf = useGLTF(url, false, true, (loader) =>
+    loader.setKTX2Loader(getKtx2Loader(gl) as unknown as Parameters<typeof loader.setKTX2Loader>[0]));
   const scene = useThree((s) => s.scene);
   const atmosphere = useExperience((s) => s.atmosphere);
   const sunlight = useRef<THREE.DirectionalLight>(null);
@@ -61,8 +91,9 @@ export function World({ url, debug, onReady }: { url: string; debug: boolean; on
   const sunDir = useMemo(() => (sun ? sun.direccion.clone() : new THREE.Vector3(0.5, -0.8, -0.3).normalize()), [sun]);
 
   // Escena estática: la sombra se recalcula solo cuando algo se mueve (el ascensor).
-  // Antes de mostrarla se compilan todos los shaders en segundo plano (compileAsync usa
-  // KHR_parallel_shader_compile): así no hay congelamientos al cargar ni al girar la cámara.
+  // Antes de mostrarla se suben las texturas y se compilan todos los shaders en segundo plano
+  // (compileAsync usa KHR_parallel_shader_compile): así no hay congelamientos al cargar ni al girar
+  // la cámara.
   const camera = useThree((s) => s.camera);
   useEffect(() => {
     gl.toneMappingExposure = atmosphere === 'dia' ? 1.05 : .94;
@@ -74,6 +105,7 @@ export function World({ url, debug, onReady }: { url: string; debug: boolean; on
     gl.shadowMap.autoUpdate = false;
     gl.shadowMap.needsUpdate = true;
     useCurtain.getState().coverNow('Preparando la escena…');
+    uploadTextures(gl, scene);
     gl.compileAsync(scene, camera)
       .catch(() => undefined)
       .then(() => {

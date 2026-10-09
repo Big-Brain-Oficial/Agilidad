@@ -9,34 +9,39 @@ import { SSAOPass } from 'three/addons/postprocessing/SSAOPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { useExperience } from './store';
 
-/** AO a escala métrica; el perfil fluido dibuja directamente y libera los buffers. */
+/**
+ * Dibuja la escena en un búfer con antialiasing (el canvas no tiene) y aplica el tono y el color
+ * de salida. El perfil alto suma AO a escala métrica; el fluido, solo el antialiasing.
+ */
 export function ArchvizPost() {
   const { gl, scene, camera, size, viewport } = useThree();
   const quality = useExperience((s) => s.quality);
   const pipeline = useRef<EffectComposer | null>(null);
 
   useEffect(() => {
-    if (quality !== 'alta') return;
     const target = new WebGLRenderTarget(1, 1, { type: HalfFloatType, samples: 4 });
     const composer = new EffectComposer(gl, target);
     const render = new RenderPass(scene, camera);
-    const ao = new SSAOPass(scene, camera, 512, 512, 16);
-    // Distancias normalizadas por el rango de profundidad del pass; radio en unidades de escena.
-    ao.kernelRadius = .22;
-    ao.minDistance = .00005;
-    ao.maxDistance = .002;
     const output = new OutputPass();
     composer.addPass(render);
-    composer.addPass(ao);
+    let ao: SSAOPass | null = null;
+    if (quality === 'alta') {
+      ao = new SSAOPass(scene, camera, 512, 512, 16);
+      // Distancias normalizadas por el rango de profundidad del pass; radio en unidades de escena.
+      ao.kernelRadius = .22;
+      ao.minDistance = .00005;
+      ao.maxDistance = .002;
+      composer.addPass(ao);
+    }
     composer.addPass(output);
     composer.setPixelRatio(viewport.dpr);
     composer.setSize(size.width, size.height);
-    ao.setSize(Math.max(1, Math.round(size.width * viewport.dpr * .6)), Math.max(1, Math.round(size.height * viewport.dpr * .6)));
+    ao?.setSize(Math.max(1, Math.round(size.width * viewport.dpr * .6)), Math.max(1, Math.round(size.height * viewport.dpr * .6)));
     pipeline.current = composer;
     return () => {
       pipeline.current = null;
       render.dispose();
-      ao.dispose();
+      ao?.dispose();
       output.dispose();
       composer.dispose();
     };

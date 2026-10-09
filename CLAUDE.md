@@ -9,7 +9,7 @@ Mapa 2D de los desarrollos de MARQ (`/`) + recorrido 3D en primera persona por l
 - `npm run dev`: servidor de desarrollo en http://localhost:3000
 - `npm run typecheck`: chequeo de tipos
 - `npm run build`: build de producción
-- `npm run model:build`: regenera el GLB desde Blender (necesita Blender 4.5 LTS; casi nunca hace falta)
+- `npm run model:build`: regenera el GLB desde Blender (necesita Blender 4.5 LTS; casi nunca hace falta). Tarda ~10 min por la codificación KTX2; `-- --sin-blender` reusa el último export de `.cache/models`. Ojo: `rebuild_archviz.py` reescribe `Torre_Natalini_ArchViz.blend`; si no se cambió el modelo, revertirlo antes de commitear.
 
 No hay lint ni tests. Antes de dar un cambio por terminado, correr `npm run typecheck` y `npm run build`.
 
@@ -43,7 +43,9 @@ No hay lint ni tests. Antes de dar un cambio por terminado, correr `npm run type
 - **Rendimiento en Windows (Direct3D):** compilar shaders congela la página. Por eso:
   - el canvas usa `frameloop="never"` hasta que `compileAsync` termina;
   - las luces de Blender se agrupan en 3 luces puntuales: no sumar luces sin necesidad;
-  - no hay mapa de entorno (PMREM): no agregar `Environment` de drei.
+  - hay un solo `Environment` (HDR de `public/archviz/rooftop_day`); su PMREM se genera con la cortina cerrada, dentro de `compileAsync`. No sumar otros mapas de entorno.
+- **Texturas y memoria de video:** las texturas del GLB van en KTX2 (las arma `model:build`) y se suben a la GPU durante la carga (`World.tsx`). No volver a WebP/JPEG: se descomprimen enteras en la placa (~600 MB con el ArchViz actual).
+- **Aceleración por hardware:** si el 3D anda muy lento en Windows, revisar `chrome://gpu`. Si *GL_RENDERER* dice «Microsoft Basic Render Driver» o «SwiftShader», el navegador dibuja por software y el problema no es el código.
 - **Sombras estáticas:** `shadowMap.autoUpdate = false`. Si algo se mueve, poner `gl.shadowMap.needsUpdate = true` (lo hace el ascensor).
 - **Colisiones:** solo cuentan las mallas `COL__*`, unidas en un BVH al cargar. La cabina del ascensor es `VIS__` y su piso se resuelve en código (`Player.tsx`).
 - El aviso `THREE.Clock: This module has been deprecated` viene de React Three Fiber 9: no es nuestro y se puede ignorar.
