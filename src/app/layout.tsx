@@ -7,9 +7,23 @@ import './globals.css';
 const montserrat = Montserrat({ subsets: ['latin'], weight: ['500', '600', '700', '800'], variable: '--font-display' });
 const inter = Inter({ subsets: ['latin'], variable: '--font-text' });
 
+const descripcion = 'Recorré los desarrollos de MARQ: un mapa de la ciudad y la Torre Natalini en primera persona.';
+
 export const metadata: Metadata = {
+  // Las previews de links (WhatsApp, redes) necesitan URLs absolutas para og:image.
+  metadataBase: new URL(
+    process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : 'https://estudiomarq.vercel.app',
+  ),
   title: 'MARQ Experience',
-  description: 'Recorré los desarrollos de MARQ: un mapa de la ciudad y la Torre Natalini en primera persona.',
+  description: descripcion,
+  openGraph: {
+    type: 'website',
+    locale: 'es_AR',
+    siteName: 'MARQ Experience',
+    title: 'MARQ Experience',
+    description: descripcion,
+  },
+  twitter: { card: 'summary_large_image' },
 };
 
 export const viewport: Viewport = {

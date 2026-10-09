@@ -15,7 +15,15 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const d = desarrolloConRecorrido(slug);
-  return { title: d ? `${d.nombre} · Recorrido 3D · MARQ Experience` : 'MARQ Experience' };
+  if (!d) return { title: 'MARQ Experience' };
+  const title = `${d.nombre} · Recorrido 3D · MARQ Experience`;
+  const description = `Recorré ${d.nombre} en primera persona. ${d.resumen}`;
+  // openGraph reemplaza entero al del layout: se repiten siteName y locale.
+  return {
+    title,
+    description,
+    openGraph: { type: 'website', locale: 'es_AR', siteName: 'MARQ Experience', title, description },
+  };
 }
 
 export default async function RecorridoPage({ params }: { params: Promise<{ slug: string }> }) {
