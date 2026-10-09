@@ -5,6 +5,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import type { ZonaId } from '@/content/recorridos';
+import { CABIN_FLOOR } from './cabinDoors';
 import { resolveCapsule } from './collision';
 import { useExperience } from './store';
 import type { WorldData } from './prepareWorld';
@@ -21,8 +22,8 @@ const WALK = 2;
 const RUN = 3.55;
 const GRAVITY = -24;
 const SUBSTEPS = 5;
-const CABIN_FLOOR = 0.08; // altura del piso de la cabina respecto de su origen
 const RIDE_SECONDS = 4.5;
+const DOOR_SECONDS = 1.1;
 
 const KEYS = {
   forward: ['KeyW', 'ArrowUp'],
@@ -51,7 +52,7 @@ export function Player({ world, debug }: { world: WorldData; debug: boolean }) {
     safe: world.spawn.clone().add(new THREE.Vector3(0, EYE, 0)),
     prev: new THREE.Vector3(),
     level: world.initialLevel,
-    ride: null as null | { from: number; to: number; t: number; target: number },
+    ride: null as null | { from: number; to: number; t: number; target: number }, // t en segundos
     bob: 0,
     frame: 0,
   });
@@ -148,6 +149,7 @@ export function Player({ world, debug }: { world: WorldData; debug: boolean }) {
   const start = useRef(new THREE.Vector3()).current;
   const end = useRef(new THREE.Vector3()).current;
   const delta = useRef(new THREE.Vector3()).current;
+  const cabinDelta = useRef(new THREE.Vector3()).current;
   const up = useRef(new THREE.Vector3(0, 1, 0)).current;
 
   const inShaft = (p: THREE.Vector3) => p.x > world.shaft.min.x && p.x < world.shaft.max.x && p.z > world.shaft.min.z && p.z < world.shaft.max.z;
@@ -162,12 +164,17 @@ export function Player({ world, debug }: { world: WorldData; debug: boolean }) {
     const has = (list: string[]) => list.some((k) => keys.has(k));
 
     if (st.ride) {
-      // Viaje en ascensor: la cabina y el visitante se mueven juntos.
-      st.ride.t = Math.min(1, st.ride.t + dt / RIDE_SECONDS);
-      world.cabin.position.y = st.ride.from + (st.ride.to - st.ride.from) * ease(st.ride.t);
+      // Viaje en ascensor: cierran las puertas, la cabina y el visitante se mueven juntos y
+      // vuelven a abrir.
+      const t = (st.ride.t += dt);
+      const step = (from: number, seconds: number) => ease(THREE.MathUtils.clamp((t - from) / seconds, 0, 1));
+      world.doors.set(step(0, DOOR_SECONDS) * (1 - step(DOOR_SECONDS + RIDE_SECONDS, DOOR_SECONDS)));
+      world.cabin.position.y = st.ride.from + (st.ride.to - st.ride.from) * step(DOOR_SECONDS, RIDE_SECONDS);
+      // Si quedó parado en el umbral, se corre hacia adentro antes de que lo alcancen las puertas.
+      if (st.pos.z > world.doors.inside) st.pos.z += (world.doors.inside - st.pos.z) * Math.min(1, dt * 8);
       st.pos.y = cabinFloor() + EYE;
       gl.shadowMap.needsUpdate = true;
-      if (st.ride.t >= 1) {
+      if (t >= RIDE_SECONDS + 2 * DOOR_SECONDS) {
         st.level = st.ride.target;
         st.ride = null;
         st.safe.copy(st.pos);
@@ -198,6 +205,11 @@ export function Player({ world, debug }: { world: WorldData; debug: boolean }) {
         start.set(st.pos.x, st.pos.y + SEG_TOP, st.pos.z);
         end.set(st.pos.x, st.pos.y + SEG_BOTTOM, st.pos.z);
         resolveCapsule(world.collider, start, end, RADIUS, delta);
+        // Frente de la cabina: viaja con ella, así que se prueba en sus coordenadas.
+        const cabinY = world.cabin.position.y;
+        start.add(delta).y -= cabinY;
+        end.add(delta).y -= cabinY;
+        delta.add(resolveCapsule(world.doors.collider, start, end, RADIUS, cabinDelta));
 
         st.onGround = delta.y > Math.abs(h * st.vel.y * 0.25);
         const offset = Math.max(0, delta.length() - 1e-5);

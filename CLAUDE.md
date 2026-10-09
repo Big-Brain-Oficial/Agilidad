@@ -42,7 +42,7 @@ No hay lint ni tests. Antes de dar un cambio por terminado, correr `npm run type
 - **`?debug` no prueba la captura del mouse:** pasa directo a la fase `playing`. Cualquier cambio en el inicio, la pausa o los controles hay que probarlo en un navegador real sin `?debug`.
 - **Rendimiento en Windows (Direct3D):** compilar shaders congela la página. Por eso:
   - el canvas usa `frameloop="never"` hasta que `compileAsync` termina;
-  - las luces de Blender se agrupan en 3 luces puntuales: no sumar luces sin necesidad;
+  - las luces de Blender se agrupan en 3 luces puntuales, más una en la cabina del ascensor: no sumar luces sin necesidad;
   - hay un solo `Environment` (HDR de `public/archviz/rooftop_day`); su PMREM se genera con la cortina cerrada, dentro de `compileAsync`. No sumar otros mapas de entorno.
 - **Texturas y memoria de video:** las texturas del GLB van en KTX2 (las arma `model:build`) y se suben a la GPU durante la carga (`World.tsx`). No volver a WebP/JPEG: se descomprimen enteras en la placa (~600 MB con el ArchViz actual).
 - **Aceleración por hardware:** si el 3D anda muy lento en Windows, revisar `chrome://gpu`. Si *GL_RENDERER* dice «Microsoft Basic Render Driver» o «SwiftShader», el navegador dibuja por software y el problema no es el código.

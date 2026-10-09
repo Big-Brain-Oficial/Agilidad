@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import type { MeshBVH } from 'three-mesh-bvh';
 import type { ZonaId } from '@/content/recorridos';
+import { buildCabinDoors, type CabinDoors } from './cabinDoors';
 import { buildCollider, wallGeometry } from './collision';
 
 // Convierte el GLB exportado por scripts/blender/export_web.py en los datos que usa la experiencia.
@@ -28,6 +29,7 @@ export interface WorldData {
   bus: THREE.Vector3;
   busDoor: THREE.Vector3;
   cabin: THREE.Group;
+  doors: CabinDoors;
   /** Alturas del piso de cada parada del ascensor (0 = hall). */
   levels: number[];
   pisoDepto: number;
@@ -104,7 +106,14 @@ export function prepareWorld(scene: THREE.Object3D): WorldData {
   const cabin = new THREE.Group();
   cabin.name = 'cabina';
   scene.add(cabin);
-  for (const m of cabinMeshes) cabin.attach(m);
+  const cabinBounds = new THREE.Box3();
+  for (const m of cabinMeshes) {
+    cabinBounds.expandByObject(m);
+    cabin.attach(m);
+  }
+  // Las puertas usan el mismo acero de la cabina: no suman shaders para compilar.
+  const steel = cabinMeshes.find((m) => !m.name.includes('LED'))!.material;
+  const doors = buildCabinDoors(cabin, cabinBounds, Array.isArray(steel) ? steel[0] : steel);
 
   const bus = worldPos(named('ANCLA__bus'));
   const busDoor = bus.clone().add(BUS_DOOR);
@@ -156,6 +165,7 @@ export function prepareWorld(scene: THREE.Object3D): WorldData {
     bus,
     busDoor,
     cabin,
+    doors,
     levels,
     pisoDepto: elevatorData.piso_depto ?? 0,
     shaft: zones.find((z) => z.id === 'ascensor')?.box ?? new THREE.Box3(),
