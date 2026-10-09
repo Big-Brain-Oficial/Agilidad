@@ -70,7 +70,7 @@ El `.blend` original no sirve tal cual para la web: tiene ~2.000 objetos, materi
 ### En el navegador
 
 - **Code splitting**: el mapa no incluye Three.js. El recorrido se importa con `next/dynamic` solo al entrar.
-- **Carga del recorrido**: al elegir «Recorrer en 3D» en la ficha se precargan la ruta, el código de Three.js y el GLB. Explorar o seleccionar edificios en el mapa no descarga el modelo inmersivo.
+- **Carga del recorrido**: al elegir «Recorrer en 3D» en la ficha se precargan la ruta y el código de Three.js. El GLB lo descarga sólo el recorrido: precargarlo en paralelo hacía dos pedidos del mismo archivo de ~20 MB y, si el caché de Chrome no lo puede guardar (incógnito, disco lleno), el recorrido fallaba con `ERR_CACHE_WRITE_FAILURE`. Explorar o seleccionar edificios en el mapa no descarga el modelo inmersivo.
 - **Progreso real**: la cortina de transición muestra el avance de descarga (`useProgress`).
 - **Shaders compilados antes de mostrar**: con la cortina todavía cerrada, `renderer.compileAsync` compila todos los materiales en segundo plano (`KHR_parallel_shader_compile`). Mientras tanto el canvas no dibuja (`frameloop="never"`): dibujar antes obligaría a esperar la compilación. En Windows (Direct3D) compilar shaders es lento, y sin esto la carga se congelaba varios segundos.
 - **Pocas luces**: las 9 luminarias de Blender se agrupan en 3 luces puntuales (hall, zona de día y zona de noche del departamento). Cada luz extra agranda el shader de todos los materiales.

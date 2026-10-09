@@ -1,7 +1,7 @@
 'use client';
 
 import { TIPOS, type Desarrollo } from '@/content/desarrollos';
-import { ArrowIcon, TipoIcon } from './icons';
+import { ArrowIcon, OverviewIcon, TipoIcon } from './icons';
 import styles from './MapHub.module.css';
 
 export type Filtro = 'todos' | 'edificio' | 'barrio' | 'casas' | 'futuro';
@@ -24,9 +24,12 @@ interface Props {
   onSelect: (d: Desarrollo | null) => void;
   onHover: (id: string | null) => void;
   onEnter3D: (d: Desarrollo) => void;
+  enVistaGeneral: boolean;
+  /** Deselecciona y lleva el mapa a la vista general. */
+  onVistaGeneral: () => void;
 }
 
-export function DevelopmentPanel({ desarrollos, visibles, filtro, onFiltro, selected, hoveredId, onSelect, onHover, onEnter3D }: Props) {
+export function DevelopmentPanel({ desarrollos, visibles, filtro, onFiltro, selected, hoveredId, onSelect, onHover, onEnter3D, enVistaGeneral, onVistaGeneral }: Props) {
   return (
     <aside className={styles.panel} aria-label="Desarrollos de MARQ">
       <header className={styles.brand}>
@@ -37,9 +40,19 @@ export function DevelopmentPanel({ desarrollos, visibles, filtro, onFiltro, sele
         </span>
       </header>
 
+      <div className={styles.overviewBar}>
+        <button type="button" className={styles.overview} data-active={enVistaGeneral || undefined} onClick={onVistaGeneral}>
+          <span className={styles.overviewIcon}><OverviewIcon /></span>
+          <span className={styles.overviewText}>
+            <strong>{enVistaGeneral ? 'Vista general' : 'Volver a la vista general'}</strong>
+            <span>{enVistaGeneral ? 'Todos los desarrollos de Resistencia' : 'Ver todos los desarrollos en el mapa'}</span>
+          </span>
+        </button>
+      </div>
+
       {selected ? (
         <section className={styles.detail} aria-live="polite">
-          <button type="button" className={styles.back} onClick={() => onSelect(null)}>
+          <button type="button" className={styles.back} onClick={onVistaGeneral}>
             ← Todos los desarrollos
           </button>
           <div className={styles.chips}>

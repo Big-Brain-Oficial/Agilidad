@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { DESARROLLOS, urlModelo, type Desarrollo } from '@/content/desarrollos';
+import { DESARROLLOS, type Desarrollo } from '@/content/desarrollos';
 import { useCurtain, useCurtainNavigate } from '@/components/transition/curtain-store';
 import { DevelopmentPanel, type Filtro } from './DevelopmentPanel';
 import { MapCanvas, type MapCanvasHandle } from './MapCanvas';
@@ -17,6 +17,7 @@ export function MapHub() {
   const [filtro, setFiltro] = useState<Filtro>('todos');
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [enVistaGeneral, setEnVistaGeneral] = useState(true);
 
   // Si venimos del 3D (en el MARQ Bus), la cortina está cerrada: se abre al montar el mapa.
   useEffect(() => {
@@ -30,14 +31,16 @@ export function MapHub() {
   );
   const selected = DESARROLLOS.find((d) => d.id === selectedId) ?? null;
 
-  // La precarga se reserva para quien decide entrar al recorrido desde la ficha.
+  // La precarga se reserva para quien decide entrar al recorrido desde la ficha. El GLB no se
+  // precarga: con el modelo de ~20 MB, esa descarga seguía en curso cuando el recorrido pedía el
+  // mismo archivo y, si el caché de Chrome no puede guardarlo (incógnito, disco lleno), el
+  // recorrido fallaba con ERR_CACHE_WRITE_FAILURE. Lo descarga sólo el recorrido, con progreso.
   const prefetch3D = useCallback(
     (d: Desarrollo) => {
       if (!d.recorrido3d || prefetched.has(d.id)) return;
       prefetched.add(d.id);
       router.prefetch(`/recorrido/${d.recorrido3d.slug}`);
       void import('@/components/experience/Experience');
-      void fetch(urlModelo(d.recorrido3d.modelo), { priority: 'low' } as RequestInit).catch(() => prefetched.delete(d.id));
     },
     [router]
   );
@@ -64,13 +67,21 @@ export function MapHub() {
   // El mapa selecciona el desarrollo. La entrada al recorrido queda en su ficha.
   const onMarkerClick = select;
 
+  const vistaGeneral = useCallback(() => {
+    setSelectedId(null);
+    void mapRef.current?.vistaGeneral();
+  }, []);
+
+  // Esc equivale a «← Todos los desarrollos» en la ficha.
+  const selectedRef = useRef(selectedId);
+  useEffect(() => { selectedRef.current = selectedId; }, [selectedId]);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setSelectedId(null);
+      if (e.key === 'Escape' && selectedRef.current) vistaGeneral();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  }, [vistaGeneral]);
 
   return (
     <main className={styles.hub}>
@@ -83,6 +94,7 @@ export function MapHub() {
           hoveredId={hoveredId}
           onMarkerClick={onMarkerClick}
           onHover={hover}
+          onVistaGeneral={setEnVistaGeneral}
         />
         <p className={styles.hint}>Arrastrá para explorar · rueda o pellizco para acercar</p>
       </section>
@@ -96,6 +108,8 @@ export function MapHub() {
         onSelect={select}
         onHover={hover}
         onEnter3D={enter3D}
+        enVistaGeneral={enVistaGeneral}
+        onVistaGeneral={vistaGeneral}
       />
     </main>
   );

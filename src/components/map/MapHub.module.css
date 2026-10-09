@@ -77,13 +77,23 @@
   color: #3c372f;
 }
 
+/* Tallo desde la base de la maqueta hasta la tarjeta: se alarga si la tarjeta baja para no pisar a otra. */
+.markerStem {
+  position: absolute;
+  left: -0.5px;
+  top: 0;
+  width: 1px;
+  background: #977b54;
+  transition: height 0.2s ease;
+}
 .geoMarker {
-  position: relative;
+  position: absolute;
+  left: 0;
+  top: 0;
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 9px 14px 9px 10px;
-  transform: translate(-14px, 14px);
   border: 1px solid #c5a369;
   border-radius: 10px;
   background: #fffdf7;
@@ -93,15 +103,7 @@
   pointer-events: auto;
   text-align: left;
   white-space: nowrap;
-}
-.geoMarker::before {
-  content: '';
-  position: absolute;
-  left: 13px;
-  top: -14px;
-  height: 14px;
-  width: 1px;
-  background: #977b54;
+  transition: transform 0.2s ease, background 0.15s ease, border-color 0.15s ease;
 }
 .geoMarker > i {
   width: 8px;
@@ -132,9 +134,15 @@
   border-color: #a17d56;
   background: #fff7e9;
 }
-.geoMarker[data-shared] { transform: translate(-14px, 98px); }
-.geoMarker[data-shared]::before { top: -98px; height: 98px; }
-.markerItem:has(.geoMarker[data-active]) { z-index: 1; }
+/* De lejos (vista general) la tarjeta muestra sólo el nombre; la elegida conserva el detalle. */
+.markers[data-compact] .geoMarker:not([data-selected]) {
+  gap: 8px;
+  padding: 7px 12px 7px 9px;
+}
+.markers[data-compact] .geoMarker:not([data-selected]) small,
+.markers[data-compact] .geoMarker:not([data-selected]) em {
+  display: none;
+}
 
 .mapLoading,
 .mapError {
@@ -207,9 +215,11 @@
 
 @media (prefers-reduced-motion: reduce) {
   .mapLoading i { animation: none; }
+  .markerStem,
+  .geoMarker { transition: none; }
 }
 
-/* Marcadores HTML sobre el SVG: botones accesibles con tamaño fijo en pantalla. */
+/* Marcadores HTML sobre el mapa: botones accesibles con tamaño fijo en pantalla. */
 .markers {
   position: absolute;
   inset: 0;
@@ -217,6 +227,8 @@
   padding: 0;
   list-style: none;
   pointer-events: none;
+  /* Contiene el z-index de cada tarjeta (que sigue su posición en pantalla) sobre el mapa. */
+  isolation: isolate;
 }
 
 .markerItem {
@@ -446,6 +458,61 @@
   letter-spacing: 0.04em;
 }
 
+/* Botón de vista general: discreto mientras el mapa la muestra, oscuro cuando sirve para volver. */
+.overviewBar {
+  padding: 18px 28px 0;
+}
+.overview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 14px 10px 10px;
+  border: 1px solid var(--ink);
+  border-radius: 12px;
+  background: var(--ink);
+  color: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+.overview:hover {
+  background: var(--ink-2);
+}
+.overview[data-active] {
+  border-color: #e1d4c2;
+  background: #fffdf7;
+  color: var(--ink);
+}
+.overview[data-active]:hover {
+  border-color: #c5a369;
+}
+.overviewIcon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.12);
+}
+.overview[data-active] .overviewIcon {
+  background: #f4ead7;
+  color: #8a6a3b;
+}
+.overviewText {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+.overviewText strong {
+  font: 700 13px/1.2 var(--font-display);
+}
+.overviewText span {
+  font-size: 12px;
+  opacity: 0.72;
+}
+
 .list,
 .detail {
   padding: 22px 28px 32px;
@@ -656,6 +723,9 @@
   .brand {
     padding: 18px 20px;
   }
+  .overviewBar {
+    padding: 14px 20px 0;
+  }
   .list,
   .detail {
     padding: 18px 20px 28px;
@@ -672,4 +742,25 @@
   .mapHeading { top: 12px; left: 12px; padding: 12px 14px; }
   .mapHeading h1 { font-size: 19px; }
   .mapNote { left: 12px; }
+}
+
+/* Celular: el mapa mide ~390 × 460 px; título y tarjetas se achican para que entre la vista general.
+   La ayuda de arrastre se oculta: en pantallas táctiles el gesto es obvio y tapaba tarjetas. */
+@media (max-width: 600px) {
+  .hint { display: none; }
+  .mapHeading { top: 10px; left: 10px; padding: 9px 12px; border-radius: 11px; }
+  .mapHeading h1 { margin-top: 6px; font-size: 15px; }
+  .markers[data-compact] .geoMarker:not([data-selected]) {
+    gap: 6px;
+    padding: 5px 9px 5px 7px;
+    border-radius: 8px;
+  }
+  .markers[data-compact] .geoMarker:not([data-selected]) > span {
+    font-size: 11px;
+  }
+  .markers[data-compact] .geoMarker:not([data-selected]) > i {
+    width: 6px;
+    height: 6px;
+    box-shadow: 0 0 0 3px #f4e9de;
+  }
 }
