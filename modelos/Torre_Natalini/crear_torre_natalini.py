@@ -130,8 +130,8 @@ for x in [-3,-1.2,1.5,3.2]:box('Parante hall',(x,.10,2.15),(.07,.12,4.3),'Alumin
 box('Dintel acceso',(.1,.1,4.3),(6.3,.15,.18),'Aluminio','04_HALL')
 # Acceso abierto para recorrido.
 for x in [-1.15,1.45]:box('Hoja acceso abierta',(x,.8,1.3),(.045,1.4,2.6),'Vidrio','04_HALL')
-sofa(2.5,3.7,0,2.4,'Oliva','04_HALL',rot=math.pi/2)
-sofa(-2.3,3.6,0,1.1,'Oliva','04_HALL',rot=-math.pi/2)
+sofa(2.5,3.7,0,2.4,'Oliva','04_HALL',rot=-math.pi/2)
+sofa(-2.3,3.6,0,1.1,'Oliva','04_HALL',rot=math.pi/2)
 for x,y,r in [(1.1,3.9,.6),(1.5,3.1,.49)]:cyl('Mesa negra',(x,y,.40),r,.08,'Negro','04_HALL');cyl('Base mesa',(x,y,.2),.23,.37,'Negro','04_HALL')
 plant(2.35,6.2,0,.36,2.8)
 for j,c in enumerate([(.86,.25,.05),(.17,.43,.64),(.7,.65,.02)]):

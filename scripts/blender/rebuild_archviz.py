@@ -364,8 +364,9 @@ def sofa(x, y, width=2.25, ma='linen', local=True, col='08_DEPTO_MOBILIARIO', ro
 
 
 sofa(2.86, 2.90)
-sofa(2.44, 3.8, 2.25, 'olive', False, '04_HALL', math.pi/2)
-sofa(-2.28, 3.55, 1.05, 'olive', False, '04_HALL', -math.pi/2)
+# Los del hall miran hacia el centro, con el respaldo contra la pared lateral.
+sofa(2.44, 3.8, 2.25, 'olive', False, '04_HALL', -math.pi/2)
+sofa(-2.28, 3.55, 1.05, 'olive', False, '04_HALL', math.pi/2)
 box('Alfombra estar', (2.99, 1.57, .012), (2.50, 2.38, .022), 'rug', .01)
 table = cylinder('Mesa centro roble', (2.98, 1.60, .375), .47, .045)
 table.scale.y = .73
