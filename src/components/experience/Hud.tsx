@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import type { Desarrollo } from '@/content/desarrollos';
-import { AVISO_MODELO, ZONAS_NATALINI } from '@/content/recorridos';
+import { AVISO_MODELO, OBJETOS_NATALINI, ZONAS_NATALINI } from '@/content/recorridos';
 import { useCurtainNavigate } from '@/components/transition/curtain-store';
 import { useExperience } from './store';
 import styles from './Experience.module.css';
@@ -21,6 +21,9 @@ function Controls() {
       </li>
       <li>
         <span><kbd>E</kbd></span> Usar ascensor · subir al bus
+      </li>
+      <li>
+        <span><kbd>I</kbd></span> Información de los objetos con el símbolo «i»
       </li>
       <li>
         <span><kbd>Esc</kbd></span> Pausa
@@ -67,6 +70,10 @@ export function Hud({ desarrollo }: { desarrollo: Desarrollo }) {
   const zona = useExperience((s) => s.zona);
   const riding = useExperience((s) => s.riding);
   const lockError = useExperience((s) => s.lockError);
+  const infoId = useExperience((s) => s.info);
+  const infoOpenId = useExperience((s) => s.infoOpen);
+  const seen = OBJETOS_NATALINI.find((o) => o.id === infoId);
+  const open = OBJETOS_NATALINI.find((o) => o.id === infoOpenId);
   const navigate = useCurtainNavigate();
   const info = ZONAS_NATALINI[zona];
 
@@ -104,10 +111,30 @@ export function Hud({ desarrollo }: { desarrollo: Desarrollo }) {
             <strong>{info.titulo}</strong>
             <span>{info.texto}</span>
           </aside>
-          {prompt && (
-            <div className={styles.prompt} role="status">
-              <kbd>E</kbd> {prompt}
-            </div>
+          <div className={styles.prompts} role="status">
+            {prompt && (
+              <div className={styles.prompt}>
+                <kbd>E</kbd> {prompt}
+              </div>
+            )}
+            {seen && seen !== open && (
+              <div className={styles.prompt}>
+                <kbd>I</kbd> {seen.nombre} · más información
+              </div>
+            )}
+          </div>
+          {open && (
+            <aside className={styles.info} aria-live="polite" aria-labelledby="info-title">
+              <span className={styles.infoKicker}>{open.nombre}</span>
+              <strong id="info-title">{open.titulo}</strong>
+              <p>{open.texto}</p>
+              {open.datos && (
+                <ul>
+                  {open.datos.map((d) => <li key={d}>{d}</li>)}
+                </ul>
+              )}
+              <span className={styles.infoClose}><kbd>I</kbd> cerrar</span>
+            </aside>
           )}
           {riding && <div className={styles.riding}>En el ascensor…</div>}
           <p className={styles.help}>

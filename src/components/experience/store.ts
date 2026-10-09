@@ -13,6 +13,10 @@ interface ExperienceState {
   /** Texto de la acción disponible (tecla E), o null. */
   prompt: string | null;
   riding: boolean;
+  /** Objeto con información que se está mirando (tecla I), o null. */
+  info: string | null;
+  /** Objeto cuya tarjeta de información está abierta, o null. */
+  infoOpen: string | null;
   /** El navegador rechazó capturar el mouse (se puede reintentar con otro clic). */
   lockError: boolean;
   /** Bloquea el puntero (lo registra el control de primera persona). */
@@ -28,6 +32,10 @@ interface ExperienceState {
   setZona: (zona: ZonaId) => void;
   setPrompt: (prompt: string | null) => void;
   setRiding: (riding: boolean) => void;
+  setInfo: (info: string | null) => void;
+  /** Abre la tarjeta del objeto que se mira, o cierra la que está abierta. */
+  toggleInfo: () => void;
+  closeInfo: () => void;
   setLockError: (lockError: boolean) => void;
   setLock: (lock: () => void) => void;
   leave: () => void;
@@ -39,6 +47,8 @@ export const useExperience = create<ExperienceState>((set, get) => ({
   zona: 'exterior',
   prompt: null,
   riding: false,
+  info: null,
+  infoOpen: null,
   lockError: false,
   lock: () => {},
   quality: 'alta',
@@ -54,12 +64,19 @@ export const useExperience = create<ExperienceState>((set, get) => ({
     if (get().prompt !== prompt) set({ prompt });
   },
   setRiding: (riding) => set({ riding }),
+  setInfo: (info) => {
+    if (get().info !== info) set({ info });
+  },
+  toggleInfo: () => set(({ info, infoOpen }) => ({ infoOpen: infoOpen ? null : info })),
+  closeInfo: () => {
+    if (get().infoOpen) set({ infoOpen: null });
+  },
   setLockError: (lockError) => set({ lockError }),
   setLock: (lock) => set({ lock }),
   leave: () => {
     if (get().phase === 'leaving') return;
-    set({ phase: 'leaving', prompt: null });
+    set({ phase: 'leaving', prompt: null, info: null, infoOpen: null });
     if (typeof document !== 'undefined' && document.pointerLockElement) document.exitPointerLock();
   },
-  reset: () => set({ phase: 'loading', zona: 'exterior', prompt: null, riding: false, lockError: false, views: [], visit: () => {}, lock: () => {} }),
+  reset: () => set({ phase: 'loading', zona: 'exterior', prompt: null, riding: false, info: null, infoOpen: null, lockError: false, views: [], visit: () => {}, lock: () => {} }),
 }));

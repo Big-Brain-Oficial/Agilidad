@@ -8,6 +8,31 @@
 .canvas {
   position: absolute;
   inset: 0;
+  isolation: isolate; /* los símbolos «i» (drei Html) no pasan por encima del HUD */
+}
+
+/* Símbolo «i» sobre un objeto con información: discreto de lejos, resaltado al estar cerca. */
+.marker {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+  background: rgba(29, 29, 31, 0.6);
+  color: #fff;
+  font: italic 700 17px/1 Georgia, 'Times New Roman', serif;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
+  user-select: none;
+}
+.marker[data-state='oculto'] {
+  opacity: 0;
+  transform: scale(0.6);
+}
+.marker[data-state='cerca'] {
+  background: var(--accent);
+  transform: scale(1.2);
 }
 
 /* ---- HUD ---------------------------------------------------------------------- */
@@ -86,10 +111,19 @@
   color: #45413b;
 }
 
-.prompt {
+/* Avisos de E (acción) e I (información), apilados sobre la ayuda. */
+.prompts {
   position: absolute;
   left: 50%;
   bottom: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.prompt {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -98,9 +132,8 @@
   background: rgba(29, 29, 31, 0.86);
   color: #fff;
   font: 600 14px/1 var(--font-display);
-  transform: translateX(-50%);
+  white-space: nowrap;
   animation: pop 0.25s ease;
-  pointer-events: none;
 }
 .prompt kbd {
   border-color: rgba(255, 255, 255, 0.2);
@@ -111,7 +144,60 @@
 @keyframes pop {
   from {
     opacity: 0;
-    transform: translate(-50%, 8px);
+    transform: translateY(8px);
+  }
+}
+
+/* Tarjeta de información de un objeto (tecla I): no pausa, se lee mientras se recorre. */
+.info {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  display: grid;
+  gap: 8px;
+  width: min(340px, calc(100% - 36px));
+  padding: 16px 18px;
+  border-left: 4px solid var(--accent);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: var(--shadow);
+  transform: translateY(-50%);
+  animation: slide 0.3s ease;
+  pointer-events: none;
+}
+.info strong {
+  font: 700 18px/1.2 var(--font-display);
+}
+.info p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #45413b;
+}
+.info ul {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0 0 0 16px;
+  font-size: 12px;
+  color: #656057;
+}
+.infoKicker {
+  font: 600 11px/1 var(--font-display);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.infoClose {
+  justify-self: end;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+@keyframes slide {
+  from {
+    opacity: 0;
+    transform: translate(12px, -50%);
   }
 }
 

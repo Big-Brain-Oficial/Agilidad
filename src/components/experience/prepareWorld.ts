@@ -4,7 +4,6 @@ import type { ZonaId } from '@/content/recorridos';
 import { buildCabinDoors, type CabinDoors } from './cabinDoors';
 import { buildCollider, wallGeometry } from './collision';
 import { buildEntranceDoor, removeOpenLeaves, type EntranceDoor } from './entranceDoor';
-import { turnHallSofas } from './hallSofas';
 
 // Convierte el GLB exportado por scripts/blender/export_web.py en los datos que usa la experiencia.
 // Convenciones de nombres del GLB:
@@ -126,7 +125,6 @@ export function prepareWorld(scene: THREE.Object3D): WorldData {
     removeOpenLeaves(hallGlass);
     entrance = buildEntranceDoor(scene, hallGlass.material as THREE.Material, hallAluminum.material as THREE.Material);
   }
-  turnHallSofas(scene);
 
   const bus = worldPos(named('ANCLA__bus'));
   const busDoor = bus.clone().add(BUS_DOOR);

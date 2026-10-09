@@ -12,7 +12,8 @@ import { useExperience } from './store';
 import type { WorldData } from './prepareWorld';
 
 // Control en primera persona: mouse para mirar (pointer lock), WASD/flechas para caminar,
-// Shift para correr y E (o clic) para interactuar. La cámara está a la altura de los ojos y
+// Shift para correr, E (o clic) para interactuar e I para ver la información del objeto cercano
+// (InfoMarkers). La cámara está a la altura de los ojos y
 // el cuerpo es una cápsula que colisiona contra el BVH del modelo.
 
 const EYE = 1.65;
@@ -89,6 +90,7 @@ export function Player({ world, debug }: { world: WorldData; debug: boolean }) {
     const down = (e: KeyboardEvent) => {
       pressed.current.add(e.code);
       if (e.code === 'KeyE' && useExperience.getState().phase === 'playing') current.current?.action();
+      if (e.code === 'KeyI' && !e.repeat && useExperience.getState().phase === 'playing') useExperience.getState().toggleInfo();
       if (e.code.startsWith('Arrow') || e.code === 'Space') e.preventDefault();
     };
     const up = (e: KeyboardEvent) => pressed.current.delete(e.code);
@@ -139,6 +141,7 @@ export function Player({ world, debug }: { world: WorldData; debug: boolean }) {
         return new Promise((r) => setTimeout(() => r(pressed.current.delete(code)), ms));
       },
       interact: () => current.current?.action(),
+      info: () => useExperience.getState().toggleInfo(),
     };
     (window as unknown as { marq: typeof api }).marq = api;
     return () => { delete (window as unknown as { marq?: typeof api }).marq; };
