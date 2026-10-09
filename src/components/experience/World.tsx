@@ -46,7 +46,7 @@ function uploadTextures(gl: THREE.WebGLRenderer, scene: THREE.Object3D) {
 /**
  * Agrupa las luminarias de Blender en pocas luces puntuales. Cada luz agranda los shaders de
  * todos los materiales y en Windows (Direct3D) compilarlos puede congelar la página varios
- * segundos: 9 luces → 3 (hall, zona de día y zona de noche del departamento).
+ * segundos: 9 luces → 3 (hall, zona de día y zona de noche del departamento), más la de la cabina.
  */
 function groupInteriorLights(world: WorldData) {
   const inside = (l: LightAnchor) => world.zones.some((z) => z.box.containsPoint(l.position));
@@ -87,6 +87,7 @@ export function World({ url, debug, onReady }: { url: string; debug: boolean; on
   const model = useMemo(() => gltf.scene.clone(true), [gltf]);
   const world = useMemo(() => prepareWorld(model), [model]);
   const interiorLights = useMemo(() => groupInteriorLights(world), [world]);
+  const cabinLight = world.lights.find((l) => l.enCabina);
   const sun = world.lights.find((l) => l.tipo === 'SUN');
   const sunDir = useMemo(() => (sun ? sun.direccion.clone() : new THREE.Vector3(0.5, -0.8, -0.3).normalize()), [sun]);
 
@@ -176,7 +177,12 @@ export function World({ url, debug, onReady }: { url: string; debug: boolean; on
       {interiorLights.map((l, i) => (
         <pointLight key={i} position={l.position} intensity={Math.min(85, l.energy * 0.25)} distance={12} decay={2} color={INTERIOR_LIGHT} />
       ))}
-      <primitive object={world.cabin} />
+      {/* La cabina lleva su propia luz: con las puertas cerradas no le llega la del hall ni la del palier. */}
+      <primitive object={world.cabin}>
+        {cabinLight && (
+          <pointLight position={cabinLight.position} intensity={cabinLight.energia * 0.12} distance={4} decay={2} color={INTERIOR_LIGHT} />
+        )}
+      </primitive>
 
       <Surroundings />
       <MarqBus position={world.bus} />
