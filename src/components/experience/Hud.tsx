@@ -23,7 +23,7 @@ function Controls() {
         <span><kbd>E</kbd></span> Usar ascensor · subir al bus
       </li>
       <li>
-        <span><kbd>I</kbd></span> Más información del objeto que mirás
+        <span><kbd>I</kbd></span> Información de los objetos con el símbolo «i»
       </li>
       <li>
         <span><kbd>Esc</kbd></span> Pausa

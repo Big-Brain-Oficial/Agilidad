@@ -376,10 +376,15 @@ cylinder('Mesa lateral', (1.76, 2.33, .52), .23, .035, 'stone')
 cylinder('Mesa lateral pie', (1.76, 2.33, .25), .065, .5, 'black')
 
 
-def import_asset(asset, loc, width=None, angle=0, col='08_DEPTO_MOBILIARIO', local=True):
+def import_asset(asset, loc, width=None, angle=0, col='08_DEPTO_MOBILIARIO', local=True, only=None):
+    """`only`: prefijo del objeto a conservar, para assets que traen varias variantes en una lámina."""
     before = set(S.objects)
     bpy.ops.import_scene.gltf(filepath=str(ASSETS / asset / 'gltf.gltf'))
     objects = list(set(S.objects)-before)
+    if only:
+        for obj in [o for o in objects if not o.name.startswith(only)]:
+            objects.remove(obj)
+            bpy.data.objects.remove(obj, do_unlink=True)
     meshes = [o for o in objects if o.type == 'MESH']
     bpy.context.view_layer.update()
     coords = [o.matrix_world @ Vector(v) for o in meshes for v in o.bound_box]
@@ -408,11 +413,42 @@ def import_asset(asset, loc, width=None, angle=0, col='08_DEPTO_MOBILIARIO', loc
 
 import_asset('modern_arm_chair_01', (4.0, .66, 0), .70, .38)
 proxy('butaca', (4.0, .66, .40), (.72, .82, .80))
-if (ASSETS/'potted_plant_02/gltf.gltf').exists():
-    import_asset('potted_plant_02', (.60, 2.12, .02), .40)
-    import_asset('potted_plant_02', (2.55, 6.15, 0), .8, col='04_HALL', local=False)
-else:
-    raise FileNotFoundError('Ejecutar npm run archviz:assets para descargar potted_plant_02')
+for asset in ['potted_plant_02', 'anthurium_botany_01']:
+    if not (ASSETS/asset/'gltf.gltf').exists():
+        raise FileNotFoundError('Ejecutar npm run archviz:assets para descargar ' + asset)
+import_asset('potted_plant_02', (.60, 2.12, .02), .40)
+
+
+def planter(name, x, y, height=1.15):
+    """Maceta alta de fibra negra con forma de reloj de arena, como las del hall real. Perfil girado."""
+    # Radio y altura relativa del exterior; después el borde y el interior hasta la tierra.
+    profile = [(.21, 0), (.205, .07), (.18, .26), (.155, .48), (.17, .65), (.21, .83), (.25, .96), (.26, 1)]
+    profile = [(r, z * height) for r, z in profile] + [(.235, height), (.235, height - .04)]
+    sectors = 64
+    verts = [(0, 0, 0)] + [(r * math.cos(a), r * math.sin(a), z) for r, z in profile
+                           for a in (i * math.tau / sectors for i in range(sectors))]
+    faces = [(0, (i + 1) % sectors + 1, i + 1) for i in range(sectors)]
+    for ring in range(len(profile) - 1):
+        a, b = 1 + ring * sectors, 1 + (ring + 1) * sectors
+        faces += [(a + i, a + (i + 1) % sectors, b + (i + 1) % sectors, b + i) for i in range(sectors)]
+    mesh = bpy.data.meshes.new(name)
+    mesh.from_pydata(verts, [], faces)
+    mesh.polygons.foreach_set('use_smooth', [True] * len(mesh.polygons))
+    obj = bpy.data.objects.new(name, mesh)
+    obj.location = (x, y, 0)
+    bpy.data.collections['04_HALL'].objects.link(obj)
+    obj.data.materials.append(M['planter'])
+    obj['archviz_collide'] = False
+    cylinder('Tierra maceta alta', (x, y, height - .045), .235, .01, 'soil', local=False, col='04_HALL')
+    proxy('maceta alta', (x, y, height / 2), (.52, .52, height), False, '04_HALL')
+
+
+# Dos macetas altas con anthurium contra el vidrio del acceso, junto a la pared de piedra (foto del hall).
+M['planter'] = material('Fibra_negra', '1c1d1e', .62)
+M['soil'] = material('Sustrato', '2e241b', .95)
+for x, variant, width, angle in [(1.86, 'anthurium_botany_01_a', .9, .4), (2.62, 'anthurium_botany_01_b', .85, -.7)]:
+    planter('Maceta alta', x, .72)
+    import_asset('anthurium_botany_01', (x, .72, 1.11), width, angle, '04_HALL', False, variant)
 
 # Mesa oval y sillas con carcasa continua curvada, canto y patas torneadas.
 obj = cylinder('Comedor tapa oval roble', (5.42, 1.80, .75), .67, .045)

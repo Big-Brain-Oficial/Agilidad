@@ -5,6 +5,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
+import { InfoMarkers } from './InfoMarkers';
 import { MarqBus } from './MarqBus';
 import { Player } from './Player';
 import { Surroundings } from './Surroundings';
@@ -187,6 +188,7 @@ export function World({ url, debug, onReady }: { url: string; debug: boolean; on
       <Surroundings />
       <MarqBus position={world.bus} />
       <Player world={world} debug={debug} />
+      <InfoMarkers world={world} />
       <ArchvizPost />
     </>
   );

@@ -78,7 +78,6 @@ El `.blend` original no sirve tal cual para la web: tiene ~2.000 objetos, materi
 - **Progreso real**: la cortina de transición muestra el avance de descarga (`useProgress`).
 - **Shaders compilados antes de mostrar**: con la cortina todavía cerrada, `renderer.compileAsync` compila todos los materiales en segundo plano (`KHR_parallel_shader_compile`). Mientras tanto el canvas no dibuja (`frameloop="never"`): dibujar antes obligaría a esperar la compilación. En Windows (Direct3D) compilar shaders es lento, y sin esto la carga se congelaba varios segundos.
 - **Texturas subidas antes de mostrar**: también con la cortina cerrada, `renderer.initTexture` sube todas las texturas a la GPU. Si no, cada una se sube la primera vez que entra en cuadro y la imagen se traba al girar. Las texturas KTX2 se transcodifican en un worker con el transcodificador de Basis (`public/basis/`, copiado de `three/examples/jsm/libs/basis/`; actualizarlo junto con `three`).
-- **Correcciones al cargar**: los sillones del hall vienen mirando a la pared. `hallSofas.ts` los da vuelta sin regenerar el GLB. Los scripts de Blender ya están corregidos: cuando se regenere el modelo, el parche deja de actuar y se puede borrar.
 - **Pocas luces**: las 9 luminarias de Blender se agrupan en 3 luces puntuales (hall, zona de día y zona de noche del departamento), más una que viaja con la cabina del ascensor. Cada luz extra agranda el shader de todos los materiales.
 - **Mapa de entorno (HDR)**: `<Environment>` usa `public/archviz/rooftop_day/hdri.hdr` (2K, ~6 MB) para dar reflejos y luz ambiente a metales, lacas y vidrios. Generar su PMREM compila shaders pesados de forma sincrónica (~2 s en una Radeon Vega 11, medido con la versión anterior): ocurre dentro de `compileAsync`, con la cortina todavía cerrada. Pendiente: usar una copia de 1K para la web y medir el bloqueo.
 - **Sombras estáticas**: el mapa de sombras se calcula al cargar y solo se recalcula mientras se mueve el ascensor (`shadowMap.autoUpdate = false`).
@@ -98,7 +97,7 @@ Si alguien entra directo por URL, la cortina se cierra al instante y funciona co
 
 ## 5. Primera persona y colisiones
 
-- **Controles**: *pointer lock* para mirar con el mouse. WASD o flechas para caminar, Shift para correr, E o clic para interactuar, I para ver información del objeto que se mira, Esc para pausar.
+- **Controles**: *pointer lock* para mirar con el mouse. WASD o flechas para caminar, Shift para correr, E o clic para interactuar, I para ver información de un objeto cercano, Esc para pausar.
 - **Cuerpo**: una **cápsula** de 0,22 m de radio con los ojos a 1,65 m. El radio permite pasar por las puertas de 0,5 m que tiene el modelo.
 - **Colisión** (`collision.ts`): al cargar, las mallas `COL__*` se unen en una sola geometría en coordenadas de mundo y se construye un **BVH**. En cada paso, `shapecast` busca los triángulos cercanos y empuja la cápsula fuera de ellos. Se hacen 5 subpasos por cuadro para no atravesar paredes finas como los vidrios.
 - **Gravedad y escalones**: la cápsula cae y se apoya. Sube escalones menores a su radio, como el cordón de la vereda (11 cm) o el desnivel del terreno (15 cm).
@@ -106,7 +105,7 @@ Si alguien entra directo por URL, la cortina se cierra al instante y funciona co
 - **Ascensor**: la cabina es una **plataforma móvil**. El piso de la cabina solo existe donde está la cabina, y no se puede entrar al hueco si la cabina está en otro piso. Al apretar E se cierran las puertas, cabina y visitante viajan juntos en 4,5 s con aceleración suave y las puertas vuelven a abrir. Las puertas y el frente de la cabina se arman en código (`cabinDoors.ts`); el frente tiene su propio BVH, que se mueve con la cabina.
 - **Acceso al edificio**: dos hojas de vidrio corredizas que se abren solas cuando el visitante está a menos de 3 m (`entranceDoor.ts`). Cada hoja tiene su propio BVH, que se mueve con ella. El modelo trae dos hojas fijas abiertas a 90°: se recortan del vidrio del hall al cargar, para no regenerar el GLB.
 - **Zonas**: la posición se compara con las cajas `ZONA__*` para mostrar dónde está el visitante (vereda, hall, ascensor, palier, departamento) y un texto breve.
-- **Información de objetos**: cada objeto con información (`OBJETOS_NATALINI` en `recorridos.ts`) es una esfera en coordenadas de la escena. No depende del GLB, porque las mallas vienen unidas por material. Si la mira cruza la esfera a menos de 3 m y un rayo contra el BVH no encuentra una pared en el medio, aparece el aviso «I». Con I se abre una tarjeta que no pausa. Se cierra con I de nuevo o al alejarse más de 4,5 m.
+- **Información de objetos**: cada objeto con información (`OBJETOS_NATALINI` en `recorridos.ts`) tiene un punto en coordenadas de la escena donde flota un símbolo «i» (`InfoMarkers.tsx`, con `Html` de drei). No depende del GLB, porque las mallas vienen unidas por material. El símbolo se ve a menos de 12 m si un rayo contra el BVH no encuentra una pared en el medio. A menos de 2,5 m se resalta, aparece el aviso «I» y la tecla I abre una tarjeta que no pausa. Se cierra con I de nuevo o al alejarse más de 4,5 m.
 
 ## 6. MARQ Bus
 

@@ -13,6 +13,8 @@ const assets = [
   ['rooftop_day', '2k', ['hdri']],
   ['modern_arm_chair_01', '2k', ['gltf']],
   ['potted_plant_02', '2k', ['gltf']],
+  // Plantas del hall en macetas altas. En 1K: se ven a uno o dos metros.
+  ['anthurium_botany_01', '1k', ['gltf']],
 ];
 
 async function get(url) {

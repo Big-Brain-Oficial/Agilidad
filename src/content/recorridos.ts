@@ -31,30 +31,28 @@ export const ZONAS_NATALINI: Record<ZonaId, Zona> = {
   },
 };
 
-/** Objeto del recorrido con más información: se muestra con la tecla I al mirarlo de cerca. */
+/** Objeto del recorrido con más información: lleva un símbolo «i» encima y se abre con la tecla I al acercarse. */
 export interface InfoObjeto {
   id: string;
-  /** Nombre corto para el aviso («I · Planta del hall»). */
+  /** Nombre corto para el aviso («I · Plantas del acceso»). */
   nombre: string;
   titulo: string;
   texto: string;
   datos?: string[];
-  /** Centro y radio de la esfera que envuelve al objeto, en coordenadas de la escena (metros). */
-  centro: [number, number, number];
-  radio: number;
+  /** Dónde flota el símbolo «i», en coordenadas de la escena (metros). */
+  marcador: [number, number, number];
 }
 
 // Ejemplo inicial: describe la ambientación del modelo, sin datos del edificio real.
 export const OBJETOS_NATALINI: InfoObjeto[] = [
   {
-    id: 'planta-hall',
-    nombre: 'Planta del hall',
+    id: 'plantas-acceso',
+    nombre: 'Plantas del acceso',
     titulo: 'Verde para recibir',
     texto:
-      'En un hall de hormigón y piedra clara, la planta es lo único vivo: junto a los sillones verde oliva, sus hojas anchas suavizan el material y acompañan a quien espera el ascensor.',
-    datos: ['Maceta de barro cocido', 'Hall de acceso, junto a los sillones', 'Ambientación ilustrativa'],
-    centro: [2.57, 0.5, -6.1],
-    radio: 0.55,
+      'Contra el vidrio del acceso, dos macetas altas levantan las plantas a la altura de la mirada. Sus hojas anchas suavizan el hormigón y la piedra clara, y reciben a quien entra desde la vereda.',
+    datos: ['Macetas altas negras, en forma de reloj de arena', 'Plantas de hojas anchas', 'Ambientación ilustrativa'],
+    marcador: [2.24, 2.05, -0.72],
   },
 ];
 

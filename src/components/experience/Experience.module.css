@@ -8,6 +8,31 @@
 .canvas {
   position: absolute;
   inset: 0;
+  isolation: isolate; /* los símbolos «i» (drei Html) no pasan por encima del HUD */
+}
+
+/* Símbolo «i» sobre un objeto con información: discreto de lejos, resaltado al estar cerca. */
+.marker {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+  background: rgba(29, 29, 31, 0.6);
+  color: #fff;
+  font: italic 700 17px/1 Georgia, 'Times New Roman', serif;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
+  user-select: none;
+}
+.marker[data-state='oculto'] {
+  opacity: 0;
+  transform: scale(0.6);
+}
+.marker[data-state='cerca'] {
+  background: var(--accent);
+  transform: scale(1.2);
 }
 
 /* ---- HUD ---------------------------------------------------------------------- */
