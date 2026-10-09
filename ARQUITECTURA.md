@@ -64,19 +64,25 @@ El `.blend` original no sirve tal cual para la web: tiene ~2.000 objetos, materi
    | `ZONA__hall`, `ZONA__ascensor`, `ZONA__palier`, `ZONA__depto` | Cajas de zona (la escala es el medio tamaño) |
    | `LUZ__*` | Posición, tipo y energía de las luces de Blender, para recrearlas en la web |
 
-5. **Compresión** (gltf-transform): `dedup` + `weld` + **meshopt**, con cuantización de vértices. Resultado: **1,8 MB → 506 KB** y 44.656 triángulos.
+5. **Compresión** (gltf-transform):
+   - `dedup` + `weld` + **meshopt**, con cuantización de vértices.
+   - Las mallas `VIS__` de más de 5.000 triángulos (muebles y plantas importados) se **simplifican** con un error máximo de 1 mm, cuidando también normales y UV (`simplifyWithAttributes`).
+   - Las texturas pasan a **KTX2**: color y rugosidad en ETC1S, normales en UASTC, con tope de 2048 px. Siguen comprimidas en la memoria de video: unos 100 MB en lugar de ~600 MB como imágenes decodificadas.
+   - Resultado: **87 MB → 29,5 MB** y 346.338 triángulos (antes 531.540). La codificación KTX2 tarda unos 10 minutos; `npm run model:build -- --sin-blender` reusa el último export de Blender.
 6. **Nombre con hash** (`torre-natalini.<hash>.glb`) y caché `immutable` de un año (`next.config.ts`). El manifiesto `modelos.generated.json` indica a la app qué archivo usar.
 
 ### En el navegador
 
 - **Code splitting**: el mapa no incluye Three.js. El recorrido se importa con `next/dynamic` solo al entrar.
-- **Carga del recorrido**: al elegir «Recorrer en 3D» en la ficha se precargan la ruta y el código de Three.js. El GLB lo descarga sólo el recorrido: precargarlo en paralelo hacía dos pedidos del mismo archivo de ~20 MB y, si el caché de Chrome no lo puede guardar (incógnito, disco lleno), el recorrido fallaba con `ERR_CACHE_WRITE_FAILURE`. Explorar o seleccionar edificios en el mapa no descarga el modelo inmersivo.
+- **Carga del recorrido**: al elegir «Recorrer en 3D» en la ficha se precargan la ruta y el código de Three.js. El GLB lo descarga sólo el recorrido: precargarlo en paralelo hacía dos pedidos del mismo archivo de ~30 MB y, si el caché de Chrome no lo puede guardar (incógnito, disco lleno), el recorrido fallaba con `ERR_CACHE_WRITE_FAILURE`. Explorar o seleccionar edificios en el mapa no descarga el modelo inmersivo.
 - **Progreso real**: la cortina de transición muestra el avance de descarga (`useProgress`).
 - **Shaders compilados antes de mostrar**: con la cortina todavía cerrada, `renderer.compileAsync` compila todos los materiales en segundo plano (`KHR_parallel_shader_compile`). Mientras tanto el canvas no dibuja (`frameloop="never"`): dibujar antes obligaría a esperar la compilación. En Windows (Direct3D) compilar shaders es lento, y sin esto la carga se congelaba varios segundos.
+- **Texturas subidas antes de mostrar**: también con la cortina cerrada, `renderer.initTexture` sube todas las texturas a la GPU. Si no, cada una se sube la primera vez que entra en cuadro y la imagen se traba al girar. Las texturas KTX2 se transcodifican en un worker con el transcodificador de Basis (`public/basis/`, copiado de `three/examples/jsm/libs/basis/`; actualizarlo junto con `three`).
 - **Pocas luces**: las 9 luminarias de Blender se agrupan en 3 luces puntuales (hall, zona de día y zona de noche del departamento). Cada luz extra agranda el shader de todos los materiales.
-- **Sin mapa de entorno (PMREM)**: generarlo compila shaders pesados de forma sincrónica (~2 s en una Radeon Vega 11). La luz ambiente se resuelve con luz hemisférica + ambiental, y se modera la metalicidad de los materiales.
+- **Mapa de entorno (HDR)**: `<Environment>` usa `public/archviz/rooftop_day/hdri.hdr` (2K, ~6 MB) para dar reflejos y luz ambiente a metales, lacas y vidrios. Generar su PMREM compila shaders pesados de forma sincrónica (~2 s en una Radeon Vega 11, medido con la versión anterior): ocurre dentro de `compileAsync`, con la cortina todavía cerrada. Pendiente: usar una copia de 1K para la web y medir el bloqueo.
 - **Sombras estáticas**: el mapa de sombras se calcula al cargar y solo se recalcula mientras se mueve el ascensor (`shadowMap.autoUpdate = false`).
-- **DPR acotado** a 1,75 para no sobrecargar pantallas de alta densidad.
+- **DPR acotado** a 1,5 en calidad «Alta» y a 1 en «Fluida», para no sobrecargar pantallas de alta densidad.
+- **Un solo antialiasing**: el canvas se crea sin antialiasing y la escena siempre se dibuja en el búfer con MSAA del postproceso (`ArchvizPost`). Tener los dos duplicaba memoria de video y trabajo por cuadro.
 
 ## 4. Transición 2D ↔ 3D
 
