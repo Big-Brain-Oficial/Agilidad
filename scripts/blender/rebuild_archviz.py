@@ -700,26 +700,12 @@ box('Cielorraso pasillo', ((5.40+px2)/2, (7.57+9.33)/2, H+.09), (px2-5.40, 9.33-
 wall('Pasillo sur', (6.89, 7.51), (12.76, 7.51), col=NUC)
 wall('Pasillo fondo', (12.76, 7.45), (12.76, 9.33), col=NUC)
 
-# Vano del ascensor a la medida de las puertas de la cabina (1 m de paso, 2,10 m de alto; las arma
-# cabinDoors.ts) y no del hueco (2,6 m): así no se ven los muros del hueco ni los cantos de la cabina.
-VANO = .55  # medio ancho libre: deja ver 5 cm de los paños fijos de la cabina a cada lado
-MARCO = .07  # ancho a la vista del marco de acero
-
-
-def marco_ascensor(cx, face, top, col, local):
-    """Marco de acero que forra el vano en todo el espesor del muro (.18) y sobresale 15 mm de la
-    cara `face`, que mira hacia -y. `top` es la altura libre del vano."""
-    depth = .19  # termina 5 mm antes del dorso del muro: sin caras coplanares
-    y = face - .015 + depth / 2
-    for side in (-1, 1):
-        box('Marco ascensor', (cx + side * (VANO + MARCO / 2), y, top / 2), (MARCO, depth, top), 'metal', .003, col, local, True)
-    box('Marco ascensor', (cx, y, top + MARCO / 2), (2 * (VANO + MARCO), depth, MARCO), 'metal', .003, col, local, True)
-
-
-wall('Pasillo norte', (5.28, 9.24), (CX-VANO-MARCO, 9.24), thick=.18, col=NUC)
-wall('Pasillo norte', (CX+VANO+MARCO, 9.24), (CX+1.3, 9.24), thick=.18, col=NUC)
-wall('Dintel ascensor piso', (CX-VANO-MARCO, 9.24), (CX+VANO+MARCO, 9.24), 2.12+MARCO, H, .18, col=NUC)
-marco_ascensor(CX, 9.24-.09, 2.12, NUC, True)  # la cabina queda al ras: puertas hasta 2,10 m
+# Vano del ascensor tan ancho como el hueco: deja ver toda la cabina. Termina 1 cm antes de la cara
+# interior de los muros del hueco (a 1,11 m del eje), así no asoman sus cantos de hormigón.
+VANO = 1.10  # medio ancho
+wall('Pasillo norte', (5.28, 9.24), (CX-VANO, 9.24), thick=.18, col=NUC)
+wall('Pasillo norte', (CX+VANO, 9.24), (CX+1.3, 9.24), thick=.18, col=NUC)
+wall('Dintel ascensor piso', (CX-VANO, 9.24), (CX+VANO, 9.24), 2.65-.08, H, .18, col=NUC)  # techo de la cabina, al ras
 for x in [6.2, 8.6, CX]:
     cylinder('Spot pasillo', (x, 8.36, H-.006), .085, .012, 'light', col=NUC)
 # Hueco nuevo, con las mismas medidas que el de planta baja.
@@ -739,17 +725,17 @@ for obj in list(S.objects):
             co = obj.matrix_world @ v.co
             if co.z > 4.4:
                 v.co = inverse @ Vector((co.x, co.y, CIELO_HALL))
-# Pared del ascensor en tres paños con UV del mundo, para que el hormigón siga sin cortes.
-HALL_Y, HALL_TOP = 8.48, .08 + 2.12  # la cabina tiene el piso 8 cm sobre el del hall
-for name, x1, x2, z1 in [('Hall fondo ascensor', -2.86, -VANO-MARCO, 0), ('Hall fondo ascensor', VANO+MARCO, 3.20, 0),
-                         ('Hall dintel ascensor', -VANO-MARCO, VANO+MARCO, HALL_TOP+MARCO)]:
-    obj = box(name, ((x1+x2)/2, HALL_Y, (z1+CIELO_HALL)/2), (x2-x1, .18, CIELO_HALL-z1), 'concrete', 0, '04_HALL', False, True)
-    metric_uv(obj, M['concrete']['tile_m'], world=True)
+# Pared del ascensor blanca, de la misma piedra que la pared lateral, en tres paños con UV del
+# mundo para que la textura siga sin cortes. El dintel queda 5 cm sobre el techo de la cabina.
+HALL_Y = 8.48
+for name, x1, x2, z1 in [('Hall fondo ascensor', -2.86, -VANO, 0), ('Hall fondo ascensor', VANO, 3.20, 0),
+                         ('Hall dintel ascensor', -VANO, VANO, 2.70)]:
+    obj = box(name, ((x1+x2)/2, HALL_Y, (z1+CIELO_HALL)/2), (x2-x1, .18, CIELO_HALL-z1), 'stone', 0, '04_HALL', False, True)
+    metric_uv(obj, M['stone']['tile_m'], world=True)
 # El hueco de la losa empieza 9 cm antes de la pared: sin este paño, en el encuentro con el techo
 # quedaba una muesca hacia el hueco.
 obj = box('Losa podio cierre ascensor', (0, 8.435, CIELO_HALL+.14), (2.6, .27, .28), 'concrete', 0, '02_PODIO', False, True)
 metric_uv(obj, M['concrete']['tile_m'], world=True)
-marco_ascensor(0, HALL_Y-.09, HALL_TOP, '04_HALL', False)
 
 # Retexturizar también las superficies conservadas del hall/exterior.
 replace={'Hormigon':'concrete','Revoque':'plaster','Madera':'oak','Roble':'oak','Piedra':'stone','Marmol':'stone','Metal':'metal','Aluminio':'aluminum','Oliva':'olive','Lino':'linen','Blanco':'white'}
