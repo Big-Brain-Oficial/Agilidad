@@ -20,8 +20,8 @@ const EYE = 1.65;
 const RADIUS = 0.23;
 const SEG_TOP = 0.1 - RADIUS; // la cápsula llega 10 cm por encima de los ojos
 const SEG_BOTTOM = -EYE + RADIUS; // y apoya en el piso
-const WALK = 2;
-const RUN = 3.55;
+const WALK = 2.6;
+const RUN = 6.2; // ~2,4 veces la caminata, para que el sprint se note
 const GRAVITY = -24;
 const SUBSTEPS = 5;
 const RIDE_SECONDS = 4.5;
@@ -260,7 +260,7 @@ export function Player({ world, debug }: { world: WorldData; debug: boolean }) {
       }
 
       // Balanceo suave de la cámara al caminar.
-      st.bob = moving && st.onGround ? st.bob + dt * (has(KEYS.run) ? 13 : 9) : 0;
+      st.bob = moving && st.onGround ? st.bob + dt * (has(KEYS.run) ? 16 : 10) : 0;
     }
 
     camera.position.copy(st.pos);
