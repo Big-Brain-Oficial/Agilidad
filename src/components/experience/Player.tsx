@@ -76,8 +76,8 @@ export function Player({ world, debug }: { world: WorldData; debug: boolean }) {
       st.vel.set(0, 0, 0);
       st.bob = 0;
       pressed.current.clear();
-      st.level = view.position.y > 10 ? world.levels.length - 1 : 0;
-      world.cabin.position.y = world.levels[st.level];
+      st.level = view.position.y > 10 ? world.stops.length - 1 : 0;
+      world.cabin.position.copy(world.stops[st.level].cabin);
       camera.position.copy(st.pos);
       camera.lookAt(view.target);
       gl.shadowMap.needsUpdate = true;
@@ -156,7 +156,10 @@ export function Player({ world, debug }: { world: WorldData; debug: boolean }) {
   const movingDelta = useRef(new THREE.Vector3()).current;
   const up = useRef(new THREE.Vector3(0, 1, 0)).current;
 
-  const inShaft = (p: THREE.Vector3) => p.x > world.shaft.min.x && p.x < world.shaft.max.x && p.z > world.shaft.min.z && p.z < world.shaft.max.z;
+  const moved = useRef(new THREE.Vector3()).current;
+
+  // Cada parada tiene su hueco; las cajas abarcan solo la altura de su piso.
+  const shaftAt = (p: THREE.Vector3) => world.stops.find((stop) => stop.shaft.containsPoint(p))?.shaft ?? null;
   const cabinFloor = () => world.cabin.position.y + CABIN_FLOOR;
 
   useFrame((_, rawDelta) => {
@@ -173,9 +176,18 @@ export function Player({ world, debug }: { world: WorldData; debug: boolean }) {
       const t = (st.ride.t += dt);
       const step = (from: number, seconds: number) => ease(THREE.MathUtils.clamp((t - from) / seconds, 0, 1));
       world.doors.set(step(0, DOOR_SECONDS) * (1 - step(DOOR_SECONDS + RIDE_SECONDS, DOOR_SECONDS)));
-      world.cabin.position.y = st.ride.from + (st.ride.to - st.ride.from) * step(DOOR_SECONDS, RIDE_SECONDS);
+      // El hueco del departamento no está sobre el del hall: la cabina sube por el del hall y, al
+      // pasar la altura de transbordo, salta al otro. Con las puertas cerradas no se nota.
+      const y = st.ride.from + (st.ride.to - st.ride.from) * step(DOOR_SECONDS, RIDE_SECONDS);
+      const column = world.stops[y < world.transfer ? 0 : world.stops.length - 1].cabin;
+      moved.copy(world.cabin.position);
+      world.cabin.position.set(column.x, y, column.z);
+      moved.subVectors(world.cabin.position, moved);
+      st.pos.x += moved.x;
+      st.pos.z += moved.z;
       // Si quedó parado en el umbral, se corre hacia adentro antes de que lo alcancen las puertas.
-      if (st.pos.z > world.doors.inside) st.pos.z += (world.doors.inside - st.pos.z) * Math.min(1, dt * 8);
+      const inside = world.cabin.position.z + world.doors.inside;
+      if (st.pos.z > inside) st.pos.z += (inside - st.pos.z) * Math.min(1, dt * 8);
       st.pos.y = cabinFloor() + EYE;
       gl.shadowMap.needsUpdate = true;
       if (t >= RIDE_SECONDS + 2 * DOOR_SECONDS) {
@@ -236,7 +248,7 @@ export function Player({ world, debug }: { world: WorldData; debug: boolean }) {
         }
 
         // Piso de la cabina: solo existe donde está la cabina.
-        if (inShaft(st.pos)) {
+        if (shaftAt(st.pos)) {
           const floorEye = cabinFloor() + EYE;
           if (st.pos.y < floorEye && st.pos.y > floorEye - 0.6) {
             st.pos.y = floorEye;
@@ -247,13 +259,14 @@ export function Player({ world, debug }: { world: WorldData; debug: boolean }) {
       }
 
       // No se puede entrar al hueco si la cabina está en otro piso.
-      if (inShaft(st.pos) && !inShaft(st.prev) && Math.abs(st.pos.y - EYE - cabinFloor()) > 1) {
+      const shaft = shaftAt(st.pos);
+      if (shaft && shaft !== shaftAt(st.prev) && Math.abs(st.pos.y - EYE - cabinFloor()) > 1) {
         st.pos.x = st.prev.x;
         st.pos.z = st.prev.z;
       }
 
       // Si cae (bordes sin piso), vuelve al último lugar seguro.
-      if (st.onGround && !inShaft(st.pos)) st.safe.copy(st.pos);
+      if (st.onGround && !shaftAt(st.pos)) st.safe.copy(st.pos);
       if (st.pos.y < st.safe.y - 4) {
         st.pos.copy(st.safe);
         st.vel.set(0, 0, 0);
@@ -270,12 +283,12 @@ export function Player({ world, debug }: { world: WorldData; debug: boolean }) {
     let next: Interactable | null = null;
     if (!st.ride && ui.phase === 'playing') {
       const feet = st.pos.y - EYE;
-      if (inShaft(st.pos) && Math.abs(feet - cabinFloor()) < 0.4 && world.levels.length > 1) {
-        const target = st.level === 0 ? world.levels.length - 1 : 0;
+      if (shaftAt(st.pos) && Math.abs(feet - cabinFloor()) < 0.4 && world.stops.length > 1) {
+        const target = st.level === 0 ? world.stops.length - 1 : 0;
         next = {
           label: st.level === 0 ? `Subir al departamento muestra (piso ${world.pisoDepto})` : 'Bajar al hall',
           action: () => {
-            st.ride = { from: world.cabin.position.y, to: world.levels[target], t: 0, target };
+            st.ride = { from: world.cabin.position.y, to: world.stops[target].cabin.y, t: 0, target };
             useExperience.getState().setRiding(true);
           },
         };

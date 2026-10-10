@@ -44,6 +44,8 @@ La captura raster se calibra aproximadamente a 40,7 píxeles por metro. Sus rót
 
 El ascensor es una cabina abierta animada y un hueco vertical. La subida funciona como transición visual. No incluye cinemática de puertas ni automatismo de llamada. No se modela una escalera completa, ya que faltan cortes y dimensiones para conectarla con fidelidad.
 
+En la versión ArchViz (`scripts/blender/rebuild_archviz.py`) el ascensor llega a un pasillo de piedra que termina en la puerta del departamento. Para que el pasillo entre, el hueco del piso del departamento está 3,9 m al este del de planta baja, y el hueco de planta baja termina debajo de esa losa. No es una solución constructiva: en el recorrido web la cabina cambia de hueco con las puertas cerradas. La animación `06_RECORRIDO` del archivo interpretativo conserva el trayecto anterior.
+
 ## Organización de escena
 
 | Colección | Contenido |

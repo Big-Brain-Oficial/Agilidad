@@ -167,11 +167,17 @@ def anchor(name, loc, scale=(1, 1, 1), **props):
 anchor('ANCLA__inicio', (-6.4, -1.4, 0))
 anchor('ANCLA__acceso', (0.15, 0.4, 1.6))
 anchor('ANCLA__bus', (-11.8, -4.75, -0.11))
-anchor('ANCLA__ascensor', (0, 10, 0), niveles=[0.0, ZAPT], piso_depto=P['nivel_depto'])
 anchor('ZONA__hall', (0.15, 4.29, 2.25), (3.05, 4.19, 2.25))
-anchor('ZONA__ascensor', (0, 9.98, (ZAPT + 3) / 2), (1.02, 1.32, (ZAPT + 3) / 2))
-# Palier: desde la puerta del departamento (y = 7.35) hasta el hueco del ascensor.
-anchor('ZONA__palier', (-0.9, 7.98, ZAPT + 1.5), (2.05, 0.63, 1.5))
+# Ascensor (lo arma rebuild_archviz.py): cada parada tiene su hueco. La cabina cambia de hueco
+# a la altura `transbordo`, con las puertas cerradas.
+NUCLEO = json.loads(S['ARCHVIZ_NUCLEO'])
+anchor('ANCLA__ascensor', NUCLEO['paradas'][0], transbordo=NUCLEO['transbordo'], piso_depto=P['nivel_depto'])
+for i, (parada, (x, y, z0, z1)) in enumerate(zip(NUCLEO['paradas'], NUCLEO['huecos'])):
+    anchor(f'ANCLA__ascensor__{i}', parada)
+    anchor(f'ZONA__ascensor__{i}', (x, y, (z0 + z1) / 2), (1.02, 1.32, (z1 - z0) / 2))
+# Pasillo: desde la puerta del departamento hasta el hueco del ascensor.
+x1, y1, x2, y2 = NUCLEO['pasillo']
+anchor('ZONA__pasillo', ((x1 + x2) / 2, (y1 + y2) / 2, ZAPT + 1.5), ((x2 - x1) / 2, (y2 - y1) / 2, 1.5))
 if floor_box:
     lo, hi = floor_box
     anchor('ZONA__depto', ((lo.x + hi.x) / 2, (lo.y + hi.y) / 2, ZAPT + 1.4), ((hi.x - lo.x) / 2, (hi.y - lo.y) / 2, 1.6))

@@ -235,12 +235,13 @@ def proxy(name, loc, size, local=True, col='08_DEPTO_MOBILIARIO'):
     return obj
 
 
-def wall(name, a, b, bottom=0, top=H, thick=.12, ma='plaster', skirting=True):
+def wall(name, a, b, bottom=0, top=H, thick=.12, ma='plaster', skirting=True, col='06_DEPTO_MUROS'):
     length = math.dist(a, b)
-    obj = box(name, ((a[0]+b[0])/2, (a[1]+b[1])/2, (bottom+top)/2), (length, thick, top-bottom), ma, .004, '06_DEPTO_MUROS', collide=True)
+    obj = box(name, ((a[0]+b[0])/2, (a[1]+b[1])/2, (bottom+top)/2), (length, thick, top-bottom), ma, .004, col, collide=True)
     obj.rotation_euler.z = math.atan2(b[1]-a[1], b[0]-a[0])
     if skirting and bottom == 0:
-        foot = box('Rodapie ' + name, ((a[0]+b[0])/2, (a[1]+b[1])/2, .038), (length, thick+.014, .075), 'white', .003)
+        foot = box('Rodapie ' + name, ((a[0]+b[0])/2, (a[1]+b[1])/2, .038), (length, thick+.014, .075), 'white', .003,
+                   '08_DEPTO_MOBILIARIO' if col == '06_DEPTO_MUROS' else col)
         foot.rotation_euler.z = obj.rotation_euler.z
     return obj
 
@@ -670,11 +671,41 @@ roof=bpy.data.objects.new('Techo continuo hormigon',mesh);bpy.context.collection
 place(roof,roof.name,'concrete','09_TECHOS',collide=True)
 metric_uv(roof,2)
 solid=roof.modifiers.new('Espesor losa','SOLIDIFY');solid.thickness=.18;solid.offset=-1
-# Recorta la losa vecina para evitar doble solado dentro de la cocina.
-for obj in S.objects:
-    if obj.name.startswith('Losa derecha nivel depto'):
-        right=8.70;left=OFFSET.x+8.73
-        obj.location.x=(left+right)/2;obj.dimensions.x=right-left
+# Núcleo del piso del departamento: el ascensor llega a un pasillo que termina en la puerta de
+# entrada, en vez de abrir enfrente. Para que entre, el hueco de este piso está 3,9 m al este del
+# de planta baja: la cabina sube por el de abajo y, un piso antes de llegar y con las puertas
+# cerradas, pasa a este (Player.tsx). Es una licencia del recorrido, como el resto del núcleo.
+NUC = '05_NUCLEO_PROVISIONAL'
+CX, CY = 11.4, 10.76  # centro de la cabina en este piso, en coordenadas del departamento
+CABIN_TOP = 2.65 - .08  # techo de la cabina sobre el piso, con la cabina al ras del pasillo
+PASILLO = (5.34, 7.45, 12.82, 9.38)  # solado: de la puerta de entrada al umbral del ascensor
+TRANSBORDO = Z - .28 - 2.65 - .02  # altura de la cabina al cambiar de hueco: justo debajo de esta losa
+for obj in list(S.objects):
+    if obj.name.startswith(('Losa derecha nivel depto', 'Losa posterior izq', 'Descanso frente ascensor', 'Muro caja ascensor', 'Fondo caja ascensor')):
+        bpy.data.objects.remove(obj, do_unlink=True)
+# El hueco de planta baja termina debajo de la losa de este piso.
+for x in [-1.2, 1.2]:
+    box('Muro caja ascensor', (x, 10, (Z-.28)/2), (.18, 3, Z-.28), 'concrete', 0, NUC, False, True)
+box('Fondo caja ascensor', (0, 11.5, (Z-.28)/2), (2.6, .18, Z-.28), 'concrete', 0, NUC, False, True)
+# Losa en paños que no se superponen con los solados (caras coplanares parpadean): rodea el
+# departamento, el pasillo y el hueco nuevo, y tapa el de planta baja.
+px1, py1, px2, py2 = PASILLO
+for x1, y1, x2, y2 in [(8.73, 0, 16.2, 5.20), (8.40, 5.20, 16.2, 6.72), (7.01, 6.72, 16.2, py1), (px2, py1, 16.2, py2),
+                       (-.40, 9.30, px1, py2), (-.40, py2, CX-1.11, 15), (CX-1.11, CY+1.41, CX+1.11, 15), (CX+1.11, py2, 16.2, 15)]:
+    box('Losa nivel depto', ((x1+x2)/2, (y1+y2)/2, -.14), (x2-x1, y2-y1, .28), 'concrete', 0, '03_FACHADA_MODULAR', collide=True)
+# Pasillo: solado de piedra al ras del departamento, cielorraso blanco y tres spots.
+box('Solado pasillo', ((px1+px2)/2, (py1+py2)/2, -.065), (px2-px1, py2-py1, .13), 'stone', 0, NUC, collide=True)
+box('Cielorraso pasillo', ((5.40+px2)/2, (7.57+9.33)/2, H+.09), (px2-5.40, 9.33-7.57, .18), 'plaster', 0, NUC, collide=True)
+wall('Pasillo sur', (6.89, 7.51), (12.76, 7.51), col=NUC)
+wall('Pasillo fondo', (12.76, 7.45), (12.76, 9.33), col=NUC)
+wall('Pasillo norte', (5.28, 9.24), (CX-1.3, 9.24), thick=.18, col=NUC)
+wall('Dintel ascensor piso', (CX-1.3, 9.24), (CX+1.3, 9.24), CABIN_TOP, H, .18, col=NUC)
+for x in [6.2, 8.6, CX]:
+    cylinder('Spot pasillo', (x, 8.36, H-.006), .085, .012, 'light', col=NUC)
+# Hueco nuevo, con las mismas medidas que el de planta baja.
+for x in [CX-1.2, CX+1.2]:
+    wall('Caja ascensor piso', (x, CY-1.5), (x, CY+1.5), 0, 2.82, .18, 'concrete', False, NUC)
+wall('Fondo caja ascensor piso', (CX-1.3, CY+1.5), (CX+1.3, CY+1.5), 0, 2.82, .18, 'concrete', False, NUC)
 
 # Retexturizar también las superficies conservadas del hall/exterior.
 replace={'Hormigon':'concrete','Revoque':'plaster','Madera':'oak','Roble':'oak','Piedra':'stone','Marmol':'stone','Metal':'metal','Aluminio':'aluminum','Oliva':'olive','Lino':'linen','Blanco':'white'}
@@ -706,6 +737,8 @@ area('AV dormitorio 2',(1.5,4.7,H-.15),(1.5,4.7,0),50,1.6)
 area('AV distribuidor',(5.9,5.5,H-.15),(5.9,5.5,0),35,1.2)
 area('AV baño',(4.6,7.2,H-.1),(4.6,7.2,0),40,.7)
 area('AV toilette',(7.6,5.9,H-.1),(7.6,5.9,0),30,.5)
+# En la web el pasillo usa una de las luces del hall (World.tsx): no suma luces.
+area('AV pasillo',(9.0,8.36,H-.12),(9.0,8.36,0),100,1.2)
 area('AV hall',(0,3.5,4.15),(0,3.5,0),420,4,local=False)
 # Solo Cycles: estos paños exteriores simulan entrada de luz, no luces en cada mueble.
 area('Ventana difusa',(4,-1.2,2.5),(4,2,1),380,6,(.83,.91,1),web=False)
@@ -750,6 +783,14 @@ S.view_settings.view_transform='AgX'
 S.view_settings.exposure=.55
 S.render.film_transparent=False
 S['ARCHVIZ_BOUNDS'] = json.dumps({'min':[-.09,-.09], 'max':[8.73,9.3], 'offset':list(OFFSET)})
+# Paradas del ascensor en coordenadas globales: origen de la cabina y hueco (centro y alturas).
+# En el piso del departamento la cabina queda al ras del pasillo (su piso mide 8 cm).
+S['ARCHVIZ_NUCLEO'] = json.dumps({
+    'paradas': [[0, 10, 0], [OFFSET.x+CX, CY, Z-.08]],
+    'huecos': [[0, 9.98, 0, Z-.28], [OFFSET.x+CX, CY-.02, TRANSBORDO, Z+3]],
+    'transbordo': TRANSBORDO,
+    'pasillo': [OFFSET.x+px1, py1, OFFSET.x+px2, py2+.06],
+})
 S['ARCHVIZ_VIEWS'] = json.dumps([
     {'id':'estar','label':'Estar y comedor','position':[2.1,.72,0], 'target':[5.5,2.15,1.45]},
     {'id':'cocina','label':'Cocina','position':[7.18,3.8,0], 'target':[8.2,1.5,1.3]},
