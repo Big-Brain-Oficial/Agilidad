@@ -3,7 +3,7 @@ import type { MeshBVH } from 'three-mesh-bvh';
 import { buildCollider } from './collision';
 
 // Puertas corredizas de la cabina, armadas en código sobre la cabina abierta del modelo.
-// La cabina se abre hacia +z (el hall y el palier). Su frente lleva dos paños fijos a los
+// La cabina se abre hacia +z (el hall y el pasillo). Su frente lleva dos paños fijos a los
 // costados, un dintel y dos hojas de apertura central que se guardan detrás de los paños fijos.
 
 /** Altura del piso de la cabina respecto de su origen. */

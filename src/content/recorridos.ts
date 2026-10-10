@@ -1,7 +1,7 @@
 // Textos del recorrido 3D, por zona del modelo. Validar con MARQ antes de publicar.
 // Fuente: GUIA_MODELO.md de la Torre Natalini y estudiomarq.com.ar.
 
-export type ZonaId = 'exterior' | 'hall' | 'ascensor' | 'palier' | 'depto';
+export type ZonaId = 'exterior' | 'hall' | 'ascensor' | 'pasillo' | 'depto';
 
 export interface Zona {
   titulo: string;
@@ -19,11 +19,11 @@ export const ZONAS_NATALINI: Record<ZonaId, Zona> = {
   },
   ascensor: {
     titulo: 'Ascensor',
-    texto: 'Conecta el hall con el palier del departamento muestra.',
+    texto: 'Conecta el hall con el piso del departamento muestra.',
   },
-  palier: {
-    titulo: 'Palier',
-    texto: 'Desde aquí se accede al departamento muestra.',
+  pasillo: {
+    titulo: 'Pasillo',
+    texto: 'Comunica el ascensor con la entrada del departamento muestra.',
   },
   depto: {
     titulo: 'Departamento muestra',

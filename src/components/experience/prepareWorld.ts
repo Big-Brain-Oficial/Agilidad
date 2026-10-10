@@ -10,6 +10,7 @@ import { buildEntranceDoor, removeOpenLeaves, type EntranceDoor } from './entran
 //   COL__<zona>__<material>  malla que participa de las colisiones
 //   VIS__<zona>__<material>  malla solo visual (VIS__ascensor__* es la cabina móvil)
 //   ANCLA__*  puntos clave · ZONA__* cajas de zona (escala = medio tamaño) · LUZ__* luces de Blender
+//   ANCLA__ascensor__<n> y ZONA__ascensor__<n>  cabina y hueco de cada parada (0 = hall)
 
 export const BUS = { length: 11.5, width: 2.55, height: 3.35 };
 /** Puerta del bus respecto de su ancla: cerca del frente, del lado de la vereda (-z). */
@@ -32,10 +33,14 @@ export interface WorldData {
   cabin: THREE.Group;
   doors: CabinDoors;
   entrance: EntranceDoor | null;
-  /** Alturas del piso de cada parada del ascensor (0 = hall). */
-  levels: number[];
+  /**
+   * Paradas del ascensor (0 = hall). Cada una tiene su hueco: `cabin` es la posición del grupo de la
+   * cabina en esa parada (el modelo la trae en la 0).
+   */
+  stops: { cabin: THREE.Vector3; shaft: THREE.Box3 }[];
+  /** Altura de la cabina a la que pasa del hueco del hall al del departamento, con las puertas cerradas. */
+  transfer: number;
   pisoDepto: number;
-  shaft: THREE.Box3;
   zones: { id: ZonaId; box: THREE.Box3 }[];
   lights: LightAnchor[];
   views: { id: string; label: string; position: THREE.Vector3; target: THREE.Vector3 }[];
@@ -137,9 +142,21 @@ export function prepareWorld(scene: THREE.Object3D): WorldData {
   ].map(([x1, z1, x2, z2]) => wallGeometry(x1, z1, x2, z2));
   const busBox = new THREE.BoxGeometry(BUS.length, BUS.height, BUS.width).translate(bus.x, bus.y + BUS.height / 2, bus.z);
 
-  const zones: { id: ZonaId; box: THREE.Box3 }[] = [];
-  // Orden de prioridad: la caja del departamento envuelve también al palier.
-  for (const id of ['ascensor', 'palier', 'depto', 'hall'] as const) {
+  const stops: WorldData['stops'] = [];
+  for (let i = 0; ; i++) {
+    const cabinAnchor = scene.getObjectByName(`ANCLA__ascensor__${i}`);
+    const shaft = scene.getObjectByName(`ZONA__ascensor__${i}`);
+    if (!cabinAnchor || !shaft) break;
+    stops.push({ cabin: worldPos(cabinAnchor), shaft: boxOf(shaft) });
+  }
+  if (!stops.length) throw new Error('El modelo no tiene paradas de ascensor');
+  const modeled = stops[0].cabin.clone();
+  for (const stop of stops) stop.cabin.sub(modeled);
+
+  // Orden de prioridad: los huecos primero, y el pasillo antes que la caja del departamento, que lo
+  // toca en la puerta de entrada.
+  const zones: { id: ZonaId; box: THREE.Box3 }[] = stops.map((s) => ({ id: 'ascensor', box: s.shaft }));
+  for (const id of ['pasillo', 'depto', 'hall'] as const) {
     const o = scene.getObjectByName(`ZONA__${id}`);
     if (o) zones.push({ id, box: boxOf(o) });
   }
@@ -157,8 +174,7 @@ export function prepareWorld(scene: THREE.Object3D): WorldData {
     });
   });
 
-  const elevatorData = elevator.userData as { niveles?: number[]; piso_depto?: number };
-  const levels = elevatorData.niveles ?? [0];
+  const elevatorData = elevator.userData as { transbordo?: number; piso_depto?: number };
   const views: WorldData['views'] = [];
   scene.traverse((o) => {
     if (!o.name.startsWith('VISTA__')) return;
@@ -167,7 +183,7 @@ export function prepareWorld(scene: THREE.Object3D): WorldData {
   views.push({ id: 'exterior', label: 'Acceso al edificio', position: worldPos(named('ANCLA__inicio')), target: worldPos(named('ANCLA__acceso')) });
   // La llegada siempre comienza en la vereda, mirando al acceso del edificio.
   const initialLevel = 0;
-  cabin.position.y = levels[initialLevel];
+  cabin.position.copy(stops[initialLevel].cabin);
 
   return {
     collider: buildCollider(colliders, [...walls, busBox]),
@@ -178,9 +194,9 @@ export function prepareWorld(scene: THREE.Object3D): WorldData {
     cabin,
     doors,
     entrance,
-    levels,
+    stops,
+    transfer: elevatorData.transbordo ?? Infinity,
     pisoDepto: elevatorData.piso_depto ?? 0,
-    shaft: zones.find((z) => z.id === 'ascensor')?.box ?? new THREE.Box3(),
     zones,
     lights,
     views,
