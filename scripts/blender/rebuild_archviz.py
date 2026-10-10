@@ -111,17 +111,19 @@ bs.inputs['Emission Color'].default_value = (1, .77, .46, 1)
 bs.inputs['Emission Strength'].default_value = 3
 
 
-def metric_uv(obj, tile):
-    """UVs en metros, anteriores al bisel. Sin Generated ni UVs estiradas por escala."""
+def metric_uv(obj, tile, world=False):
+    """UVs en metros, anteriores al bisel. Sin Generated ni UVs estiradas por escala.
+    Con `world`, se miden desde el origen de la escena: la textura sigue sin corte entre piezas vecinas."""
     mesh = obj.data
     if not mesh.uv_layers:
         mesh.uv_layers.new(name='UVMap')
     uv = mesh.uv_layers.active.data
+    origin = obj.location if world else Vector()
     for face in mesh.polygons:
         axis = max(range(3), key=lambda a: abs(face.normal[a]))
         axes = (1, 2) if axis == 0 else (0, 2) if axis == 1 else (0, 1)
         for i in face.loop_indices:
-            co = mesh.vertices[mesh.loops[i].vertex_index].co
+            co = mesh.vertices[mesh.loops[i].vertex_index].co + origin
             uv[i].uv = (co[axes[0]] / tile, co[axes[1]] / tile)
 
 
@@ -677,7 +679,6 @@ solid=roof.modifiers.new('Espesor losa','SOLIDIFY');solid.thickness=.18;solid.of
 # cerradas, pasa a este (Player.tsx). Es una licencia del recorrido, como el resto del núcleo.
 NUC = '05_NUCLEO_PROVISIONAL'
 CX, CY = 11.4, 10.76  # centro de la cabina en este piso, en coordenadas del departamento
-CABIN_TOP = 2.65 - .08  # techo de la cabina sobre el piso, con la cabina al ras del pasillo
 PASILLO = (5.34, 7.45, 12.82, 9.38)  # solado: de la puerta de entrada al umbral del ascensor
 TRANSBORDO = Z - .28 - 2.65 - .02  # altura de la cabina al cambiar de hueco: justo debajo de esta losa
 for obj in list(S.objects):
@@ -698,14 +699,57 @@ box('Solado pasillo', ((px1+px2)/2, (py1+py2)/2, -.065), (px2-px1, py2-py1, .13)
 box('Cielorraso pasillo', ((5.40+px2)/2, (7.57+9.33)/2, H+.09), (px2-5.40, 9.33-7.57, .18), 'plaster', 0, NUC, collide=True)
 wall('Pasillo sur', (6.89, 7.51), (12.76, 7.51), col=NUC)
 wall('Pasillo fondo', (12.76, 7.45), (12.76, 9.33), col=NUC)
-wall('Pasillo norte', (5.28, 9.24), (CX-1.3, 9.24), thick=.18, col=NUC)
-wall('Dintel ascensor piso', (CX-1.3, 9.24), (CX+1.3, 9.24), CABIN_TOP, H, .18, col=NUC)
+
+# Vano del ascensor a la medida de las puertas de la cabina (1 m de paso, 2,10 m de alto; las arma
+# cabinDoors.ts) y no del hueco (2,6 m): así no se ven los muros del hueco ni los cantos de la cabina.
+VANO = .55  # medio ancho libre: deja ver 5 cm de los paños fijos de la cabina a cada lado
+MARCO = .07  # ancho a la vista del marco de acero
+
+
+def marco_ascensor(cx, face, top, col, local):
+    """Marco de acero que forra el vano en todo el espesor del muro (.18) y sobresale 15 mm de la
+    cara `face`, que mira hacia -y. `top` es la altura libre del vano."""
+    depth = .19  # termina 5 mm antes del dorso del muro: sin caras coplanares
+    y = face - .015 + depth / 2
+    for side in (-1, 1):
+        box('Marco ascensor', (cx + side * (VANO + MARCO / 2), y, top / 2), (MARCO, depth, top), 'metal', .003, col, local, True)
+    box('Marco ascensor', (cx, y, top + MARCO / 2), (2 * (VANO + MARCO), depth, MARCO), 'metal', .003, col, local, True)
+
+
+wall('Pasillo norte', (5.28, 9.24), (CX-VANO-MARCO, 9.24), thick=.18, col=NUC)
+wall('Pasillo norte', (CX+VANO+MARCO, 9.24), (CX+1.3, 9.24), thick=.18, col=NUC)
+wall('Dintel ascensor piso', (CX-VANO-MARCO, 9.24), (CX+VANO+MARCO, 9.24), 2.12+MARCO, H, .18, col=NUC)
+marco_ascensor(CX, 9.24-.09, 2.12, NUC, True)  # la cabina queda al ras: puertas hasta 2,10 m
 for x in [6.2, 8.6, CX]:
     cylinder('Spot pasillo', (x, 8.36, H-.006), .085, .012, 'light', col=NUC)
 # Hueco nuevo, con las mismas medidas que el de planta baja.
 for x in [CX-1.2, CX+1.2]:
     wall('Caja ascensor piso', (x, CY-1.5), (x, CY+1.5), 0, 2.82, .18, 'concrete', False, NUC)
 wall('Fondo caja ascensor piso', (CX-1.3, CY+1.5), (CX+1.3, CY+1.5), 0, 2.82, .18, 'concrete', False, NUC)
+
+# Hall: las paredes terminaban a 4,50 m y la losa empieza más arriba. Por la ranura se veían los
+# muros del hueco del ascensor; ahora llegan a la losa.
+CIELO_HALL = min((o.matrix_world @ Vector(c)).z for o in S.objects if o.name.startswith('Losa podio con hueco') for c in o.bound_box)
+for obj in list(S.objects):
+    if obj.name.startswith(('Hall cierre fondo', 'Hall dintel ascensor')):
+        bpy.data.objects.remove(obj, do_unlink=True)
+    elif obj.name in ('Hall fondo izq', 'Hall lateral der', 'Hall lateral extendido'):
+        inverse = obj.matrix_world.inverted()
+        for v in obj.data.vertices:
+            co = obj.matrix_world @ v.co
+            if co.z > 4.4:
+                v.co = inverse @ Vector((co.x, co.y, CIELO_HALL))
+# Pared del ascensor en tres paños con UV del mundo, para que el hormigón siga sin cortes.
+HALL_Y, HALL_TOP = 8.48, .08 + 2.12  # la cabina tiene el piso 8 cm sobre el del hall
+for name, x1, x2, z1 in [('Hall fondo ascensor', -2.86, -VANO-MARCO, 0), ('Hall fondo ascensor', VANO+MARCO, 3.20, 0),
+                         ('Hall dintel ascensor', -VANO-MARCO, VANO+MARCO, HALL_TOP+MARCO)]:
+    obj = box(name, ((x1+x2)/2, HALL_Y, (z1+CIELO_HALL)/2), (x2-x1, .18, CIELO_HALL-z1), 'concrete', 0, '04_HALL', False, True)
+    metric_uv(obj, M['concrete']['tile_m'], world=True)
+# El hueco de la losa empieza 9 cm antes de la pared: sin este paño, en el encuentro con el techo
+# quedaba una muesca hacia el hueco.
+obj = box('Losa podio cierre ascensor', (0, 8.435, CIELO_HALL+.14), (2.6, .27, .28), 'concrete', 0, '02_PODIO', False, True)
+metric_uv(obj, M['concrete']['tile_m'], world=True)
+marco_ascensor(0, HALL_Y-.09, HALL_TOP, '04_HALL', False)
 
 # Retexturizar también las superficies conservadas del hall/exterior.
 replace={'Hormigon':'concrete','Revoque':'plaster','Madera':'oak','Roble':'oak','Piedra':'stone','Marmol':'stone','Metal':'metal','Aluminio':'aluminum','Oliva':'olive','Lino':'linen','Blanco':'white'}
